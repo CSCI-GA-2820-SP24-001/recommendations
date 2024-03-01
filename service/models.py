@@ -1,11 +1,26 @@
 """
-Models for YourResourceModel
+Models for Recommendation
+
+Models
+------
+Recommendation - A Recommendation used in the Recommendation
+
+Attributes:
+-----------
+name (string) - the name of the pet
+recommendationType (enum) - the recommendation type (cross-sell, up-sell...etc)
+recommendation (string) - recommendation product
 
 All of the models are stored in this module
+
+Note :
+we will only need to chang serialize and deserialize
+
 """
 
 import logging
 from flask_sqlalchemy import SQLAlchemy
+from enum import Enum
 
 logger = logging.getLogger("flask.app")
 
@@ -17,9 +32,18 @@ class DataValidationError(Exception):
     """Used for an data validation errors when deserializing"""
 
 
-class YourResourceModel(db.Model):
+class EnumRecommendationType(Enum):
+    """Enumeration of valid Recommendation Type"""
+
+    CROSS_SELL = 0
+    UP_SELL = 1
+    ACCESSORY = 2
+    UNKNOWN = 3
+
+
+class Recommendation(db.Model):
     """
-    Class that represents a YourResourceModel
+    Class that represents a Recommendation
     """
 
     ##################################################
@@ -29,13 +53,20 @@ class YourResourceModel(db.Model):
     name = db.Column(db.String(63))
 
     # Todo: Place the rest of your schema here...
+    recommendationType = db.Column(
+        db.Enum(EnumRecommendationType),
+        nullable=False,
+        server_default=(EnumRecommendationType.UNKNOWN.name),
+    )
+    recommendationName = db.Column(db.String(63))
+    recommendationID = db.Column(db.Integer, primary_key=False)
 
     def __repr__(self):
-        return f"<YourResourceModel {self.name} id=[{self.id}]>"
+        return f"<Recommendation {self.name} id=[{self.id}]>"
 
     def create(self):
         """
-        Creates a YourResourceModel to the database
+        Creates a Recommendation to the database
         """
         logger.info("Creating %s", self.name)
         self.id = None  # pylint: disable=invalid-name
@@ -49,7 +80,7 @@ class YourResourceModel(db.Model):
 
     def update(self):
         """
-        Updates a YourResourceModel to the database
+        Updates a Recommendation to the database
         """
         logger.info("Saving %s", self.name)
         try:
@@ -60,7 +91,8 @@ class YourResourceModel(db.Model):
             raise DataValidationError(e) from e
 
     def delete(self):
-        """Removes a YourResourceModel from the data store"""
+        """Removes a Recommendation from the data store"""
+
         logger.info("Deleting %s", self.name)
         try:
             db.session.delete(self)
@@ -71,27 +103,37 @@ class YourResourceModel(db.Model):
             raise DataValidationError(e) from e
 
     def serialize(self):
-        """Serializes a YourResourceModel into a dictionary"""
-        return {"id": self.id, "name": self.name}
+        """Serializes a Recommendation into a dictionary"""
+
+        return {
+            "id": self.id,
+            "name": self.name,
+            "recommendationType": self.recommendationType,
+            "recommendationName": self.recommendationName,
+            "recommendationID": self.recommendationID,
+        }
 
     def deserialize(self, data):
         """
-        Deserializes a YourResourceModel from a dictionary
+        Deserializes a Recommendation from a dictionary
 
         Args:
             data (dict): A dictionary containing the resource data
         """
         try:
             self.name = data["name"]
+            self.recommendationType = data["recommendationType"]
+            self.recommendationName = data["recommendationName"]
+            self.recommendationID = data["recommendationID"]
         except AttributeError as error:
             raise DataValidationError("Invalid attribute: " + error.args[0]) from error
         except KeyError as error:
             raise DataValidationError(
-                "Invalid YourResourceModel: missing " + error.args[0]
+                "Invalid Recommendation: missing " + error.args[0]
             ) from error
         except TypeError as error:
             raise DataValidationError(
-                "Invalid YourResourceModel: body of request contained bad or no data "
+                "Invalid Recommendation: body of request contained bad or no data "
                 + str(error)
             ) from error
         return self
@@ -102,22 +144,24 @@ class YourResourceModel(db.Model):
 
     @classmethod
     def all(cls):
-        """Returns all of the YourResourceModels in the database"""
-        logger.info("Processing all YourResourceModels")
+        """Returns all of the Recommendation in the database"""
+        logger.info("Processing all Recommendation")
+
         return cls.query.all()
 
     @classmethod
     def find(cls, by_id):
-        """Finds a YourResourceModel by it's ID"""
+        """Finds a Recommendation by it's ID"""
+
         logger.info("Processing lookup for id %s ...", by_id)
         return cls.query.session.get(cls, by_id)
 
     @classmethod
     def find_by_name(cls, name):
-        """Returns all YourResourceModels with the given name
+        """Returns all Recommendation with the given name
 
         Args:
-            name (string): the name of the YourResourceModels you want to match
+            name (string): the name of the Recommendation you want to match
         """
         logger.info("Processing name query for %s ...", name)
         return cls.query.filter(cls.name == name)
