@@ -108,7 +108,7 @@ class Recommendation(db.Model):
         return {
             "id": self.id,
             "name": self.name,
-            "recommendationType": self.recommendationType,
+            "recommendationType": self.recommendationType.name,
             "recommendationName": self.recommendationName,
             "recommendationID": self.recommendationID,
         }
@@ -122,7 +122,9 @@ class Recommendation(db.Model):
         """
         try:
             self.name = data["name"]
-            self.recommendationType = data["recommendationType"]
+            self.recommendationType = getattr(
+                EnumRecommendationType, data["recommendationType"]
+            )  # create enum from string
             self.recommendationName = data["recommendationName"]
             self.recommendationID = data["recommendationID"]
         except AttributeError as error:

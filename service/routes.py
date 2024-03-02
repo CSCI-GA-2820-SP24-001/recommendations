@@ -42,31 +42,28 @@ def index():
 ######################################################################
 #  R E S T   A P I   E N D P O I N T S
 ######################################################################
-
-# Todo: Place your REST API code here ...
-
-
+# TODO: Place your REST API code here ...
 ######################################################################
 # READ A Recommendation
 ######################################################################
-@app.route("/recommendations/<int:recommendation_id>", methods=["GET"])
-def get_recommendations(recommendation_id):
-    """
-    Retrieve a single Recommendation
+# @app.route("/recommendations/<int:recommendation_id>", methods=["GET"])
+# def get_recommendations(recommendation_id):
+#     """
+#     Retrieve a single Recommendation
 
-    This endpoint will return a Recommendation based on it's id
-    """
-    app.logger.info("Request for Recommendation with id: %s", recommendation_id)
+#     This endpoint will return a Recommendation based on it's id
+#     """
+#     app.logger.info("Request for Recommendation with id: %s", recommendation_id)
 
-    recommendation = Recommendation.find(recommendation_id)
-    if not recommendation:
-        error(
-            status.HTTP_404_NOT_FOUND,
-            f"Recommendation with id '{recommendation_id}' was not found.",
-        )
+#     recommendation = Recommendation.find(recommendation_id)
+#     if not recommendation:
+#         error(
+#             status.HTTP_404_NOT_FOUND,
+#             f"Recommendation with id '{recommendation_id}' was not found.",
+#         )
 
-    app.logger.info("Returning Recommendation: %s", Recommendation.name)
-    return jsonify(Recommendation.serialize()), status.HTTP_200_OK
+#     app.logger.info("Returning Recommendation: %s", Recommendation.name)
+#     return jsonify(Recommendation.serialize()), status.HTTP_200_OK
 
 
 ######################################################################
@@ -86,9 +83,11 @@ def create_recommendations():
     recommendation.deserialize(request.get_json())
     recommendation.create()
     message = recommendation.serialize()
-    location_url = url_for(
-        "get_recommendations", recommendation_id=recommendation.id, _external=True
-    )
+    # TODO: Uncomment this code get_recommendations is implemented
+    # location_url = url_for(
+    #     "get_recommendations", recommendation_id=recommendation.id, _external=True
+    # )
+    location_url = "unknown"
 
     app.logger.info("Recommendation with ID: %d created.", recommendation.id)
     return jsonify(message), status.HTTP_201_CREATED, {"Location": location_url}
@@ -97,49 +96,49 @@ def create_recommendations():
 # ######################################################################
 # # UPDATE AN EXISTING Recommendation
 # ######################################################################
-@app.route("/recommendations/<int:recommendation_id>", methods=["PUT"])
-def update_recommendations(recommendation_id):
-    """
-    Update a Recommendation
+# @app.route("/recommendations/<int:recommendation_id>", methods=["PUT"])
+# def update_recommendations(recommendation_id):
+#     """
+#     Update a Recommendation
 
-    This endpoint will update a Recommendation based the body that is posted
-    """
-    app.logger.info("Request to update Recommendation with id: %d", recommendation_id)
-    check_content_type("application/json")
+#     This endpoint will update a Recommendation based the body that is posted
+#     """
+#     app.logger.info("Request to update Recommendation with id: %d", recommendation_id)
+#     check_content_type("application/json")
 
-    recommendation = Recommendation.find(recommendation_id)
-    if not Recommendation:
-        error(
-            status.HTTP_404_NOT_FOUND,
-            f"Recommendation with id: '{recommendation_id}' was not found.",
-        )
+#     recommendation = Recommendation.find(recommendation_id)
+#     if not Recommendation:
+#         error(
+#             status.HTTP_404_NOT_FOUND,
+#             f"Recommendation with id: '{recommendation_id}' was not found.",
+#         )
 
-    recommendation.deserialize(request.get_json())
-    recommendation.id = recommendation_id
-    recommendation.update()
+#     recommendation.deserialize(request.get_json())
+#     recommendation.id = recommendation_id
+#     recommendation.update()
 
-    app.logger.info("Recommendation with ID: %d updated.", recommendation.id)
-    return jsonify(recommendation.serialize()), status.HTTP_200_OK
+#     app.logger.info("Recommendation with ID: %d updated.", recommendation.id)
+#     return jsonify(recommendation.serialize()), status.HTTP_200_OK
 
 
 # ######################################################################
 # # DELETE A Recommendation
 # ######################################################################
-@app.route("/recommendations/<int:recommendation_id>", methods=["DELETE"])
-def delete_Recommendations(recommendation_id):
-    """
-    Delete a Recommendation
+# @app.route("/recommendations/<int:recommendation_id>", methods=["DELETE"])
+# def delete_Recommendations(recommendation_id):
+#     """
+#     Delete a Recommendation
 
-    This endpoint will delete a Recommendation based the id specified in the path
-    """
-    app.logger.info("Request to delete Recommendation with id: %d", recommendation_id)
+#     This endpoint will delete a Recommendation based the id specified in the path
+#     """
+#     app.logger.info("Request to delete Recommendation with id: %d", recommendation_id)
 
-    recommendation = Recommendation.find(recommendation_id)
-    if recommendation:
-        recommendation.delete()
+#     recommendation = Recommendation.find(recommendation_id)
+#     if recommendation:
+#         recommendation.delete()
 
-    app.logger.info("Recommendation with ID: %d delete complete.", recommendation_id)
-    return "", status.HTTP_204_NO_CONTENT
+#     app.logger.info("Recommendation with ID: %d delete complete.", recommendation_id)
+#     return "", status.HTTP_204_NO_CONTENT
 
 
 ######################################################################
