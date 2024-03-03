@@ -18,7 +18,7 @@
 Recommendation Store Service
 
 This service implements a REST API that allows you to Create, Read, Update
-and Delete Recommendations from the inventory of Recommendations in the RecommendationShop
+and Delete Recommendations from the inventory of recommendations in the RecommendationShop
 """
 
 from flask import jsonify, request, url_for, abort
@@ -44,29 +44,6 @@ def index():
 ######################################################################
 # TODO: Place your REST API code here ...
 ######################################################################
-# READ A Recommendation
-######################################################################
-# @app.route("/recommendations/<int:recommendation_id>", methods=["GET"])
-# def get_recommendations(recommendation_id):
-#     """
-#     Retrieve a single Recommendation
-
-#     This endpoint will return a Recommendation based on it's id
-#     """
-#     app.logger.info("Request for Recommendation with id: %s", recommendation_id)
-
-#     recommendation = Recommendation.find(recommendation_id)
-#     if not recommendation:
-#         error(
-#             status.HTTP_404_NOT_FOUND,
-#             f"Recommendation with id '{recommendation_id}' was not found.",
-#         )
-
-#     app.logger.info("Returning Recommendation: %s", Recommendation.name)
-#     return jsonify(Recommendation.serialize()), status.HTTP_200_OK
-
-
-######################################################################
 # CREATE A NEW Recommendation
 ######################################################################
 @app.route("/recommendations", methods=["POST"])
@@ -83,88 +60,108 @@ def create_recommendations():
     recommendation.deserialize(request.get_json())
     recommendation.create()
     message = recommendation.serialize()
-    # TODO: Uncomment this code get_recommendations is implemented
-    # location_url = url_for(
-    #     "get_recommendations", recommendation_id=recommendation.id, _external=True
-    # )
-    location_url = "unknown"
+    location_url = url_for(
+        "get_recommendations", recommendation_id=recommendation.id, _external=True
+    )
 
     app.logger.info("Recommendation with ID: %d created.", recommendation.id)
     return jsonify(message), status.HTTP_201_CREATED, {"Location": location_url}
 
 
-# ######################################################################
-# # UPDATE AN EXISTING Recommendation
-# ######################################################################
-# @app.route("/recommendations/<int:recommendation_id>", methods=["PUT"])
-# def update_recommendations(recommendation_id):
-#     """
-#     Update a Recommendation
+######################################################################
+# READ A Recommendation
+######################################################################
+@app.route("/recommendations/<int:recommendation_id>", methods=["GET"])
+def get_recommendations(recommendation_id):
+    """
+    Retrieve a single Recommendation
 
-#     This endpoint will update a Recommendation based the body that is posted
-#     """
-#     app.logger.info("Request to update Recommendation with id: %d", recommendation_id)
-#     check_content_type("application/json")
+    This endpoint will return a Recommendation based on it's id
+    """
+    app.logger.info("Request for recommendation with id: %s", recommendation_id)
 
-#     recommendation = Recommendation.find(recommendation_id)
-#     if not Recommendation:
-#         error(
-#             status.HTTP_404_NOT_FOUND,
-#             f"Recommendation with id: '{recommendation_id}' was not found.",
-#         )
+    recommendation = Recommendation.find(recommendation_id)
+    if not recommendation:
+        error(
+            status.HTTP_404_NOT_FOUND,
+            f"Recommendation with id '{recommendation_id}' was not found.",
+        )
 
-#     recommendation.deserialize(request.get_json())
-#     recommendation.id = recommendation_id
-#     recommendation.update()
-
-#     app.logger.info("Recommendation with ID: %d updated.", recommendation.id)
-#     return jsonify(recommendation.serialize()), status.HTTP_200_OK
-
-
-# ######################################################################
-# # DELETE A Recommendation
-# ######################################################################
-# @app.route("/recommendations/<int:recommendation_id>", methods=["DELETE"])
-# def delete_Recommendations(recommendation_id):
-#     """
-#     Delete a Recommendation
-
-#     This endpoint will delete a Recommendation based the id specified in the path
-#     """
-#     app.logger.info("Request to delete Recommendation with id: %d", recommendation_id)
-
-#     recommendation = Recommendation.find(recommendation_id)
-#     if recommendation:
-#         recommendation.delete()
-
-#     app.logger.info("Recommendation with ID: %d delete complete.", recommendation_id)
-#     return "", status.HTTP_204_NO_CONTENT
+    app.logger.info("Returning recommendation: %s", recommendation.name)
+    return jsonify(recommendation.serialize()), status.HTTP_200_OK
 
 
 ######################################################################
-# (TODO) LIST ALL Recommendations
-# Required extra function (classmethod) to develop
+# UPDATE AN EXISTING RECOMMENDATION
 ######################################################################
-# @app.route("/recommendations", methods=["GET"])
-# def list_pets():
-#     """Returns all of the recommendations"""
-#     app.logger.info("Request for pet list")
+@app.route("/recommendations/<int:recommendations_id>", methods=["PUT"])
+def update_recommendations(recommendations_id):
+    """
+    Update a Recommendation
 
-#     recommendations = []
+    This endpoint will update a Recommendation based the body that is posted
+    """
+    app.logger.info("Request to update recommendations with id: %d", recommendations_id)
+    check_content_type("application/json")
 
-#     # See if any query filters were passed in
-#     category = request.args.get("category")
-#     name = request.args.get("name")
-#     if category:
-#         recommendations = Recommendation.find_by_category(category)
-#     elif name:
-#         recommendations = Recommendation.find_by_name(name)
-#     else:
-#         recommendations = Recommendation.all()
+    recommendations = Recommendation.find(recommendations_id)
+    if not recommendations:
+        error(
+            status.HTTP_404_NOT_FOUND,
+            f"Recommendation with id: '{recommendations_id}' was not found.",
+        )
 
-#     results = [recommendation.serialize() for pet in recommendations]
-#     app.logger.info("Returning %d recommendations", len(results))
-#     return jsonify(results), status.HTTP_200_OK
+    recommendations.deserialize(request.get_json())
+    recommendations.id = recommendations_id
+    recommendations.update()
+
+    app.logger.info("Recommendation with ID: %d updated.", recommendations.id)
+    return jsonify(recommendations.serialize()), status.HTTP_200_OK
+
+
+######################################################################
+# DELETE A RECOMMENDATION
+######################################################################
+@app.route("/recommendations/<int:recommendations_id>", methods=["DELETE"])
+def delete_recommendations(recommendations_id):
+    """
+    Delete a Recommendation
+
+    This endpoint will delete a Recommendation based the id specified in the path
+    """
+    app.logger.info("Request to delete recommendations with id: %d", recommendations_id)
+
+    recommendations = Recommendation.find(recommendations_id)
+    if recommendations:
+        recommendations.delete()
+
+    app.logger.info("Recommendation with ID: %d delete complete.", recommendations_id)
+    return "", status.HTTP_204_NO_CONTENT
+
+
+#####################################################################
+# LIST ALL Recommendations
+#####################################################################
+@app.route("/recommendations", methods=["GET"])
+def list_recommendations():
+    """Returns all of the recommendations"""
+    app.logger.info("Request for recommendations list")
+
+    recommendations = []
+
+    # See if any query filters were passed in
+    category = request.args.get("category")
+    name = request.args.get("name")
+    if category:
+        recommendations = Recommendation.find_by_category(category)
+    elif name:
+        recommendations = Recommendation.find_by_name(name)
+    else:
+        recommendations = Recommendation.all()
+
+    results = [recommendation.serialize() for recommendation in recommendations]
+    app.logger.info("Returning %d recommendations", len(results))
+    return jsonify(results), status.HTTP_200_OK
 
 
 ######################################################################

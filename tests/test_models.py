@@ -1,5 +1,5 @@
 """
-Test cases for Pet Model
+Test cases for Recommendation Model
 """
 
 import os
@@ -63,11 +63,45 @@ class TestRecommendationModel(TestCase):
         self.assertEqual(len(found), 1)
         data = Recommendation.find(recommendation.id)
         self.assertEqual(data.name, recommendation.name)
-        # TODO: This has error, data.recommendationType seems be generated ramdomly.
-        # So maybe just don't check this here
-        # self.assertEqual(data.recommendationType, EnumRecommendationType.UNKNOWN)
-
+        self.assertEqual(data.recommendationType, EnumRecommendationType.UNKNOWN)
         self.assertEqual(data.recommendationName, recommendation.recommendationName)
         self.assertEqual(data.recommendationID, recommendation.recommendationID)
+
+    # TODO
+    # def test_create_a_recommendation(self):
+    #     """It should Create a recommendation and assert that it exists"""
+    #     recommendation = Recommendation(name="Fido", category="dog", available=True, gender=Gender.MALE)
+    #     self.assertEqual(str(recommendation), "<Recommendation Fido id=[None]>")
+    #     self.assertTrue(recommendation is not None)
+    #     self.assertEqual(recommendation.id, None)
+    #     self.assertEqual(recommendation.name, "Fido")
+    #     self.assertEqual(recommendation.category, "dog")
+    #     self.assertEqual(recommendation.available, True)
+    #     self.assertEqual(recommendation.gender, Gender.MALE)
+    #     recommendation = Recommendation(name="Fido", category="dog", available=False, gender=Gender.FEMALE)
+    #     self.assertEqual(recommendation.available, False)
+    #     self.assertEqual(recommendation.gender, Gender.FEMALE)
+
+    def test_read_a_recommendation(self):
+        """It should Read a Recommendation"""
+        recommendation = RecommendationFactory()
+        logging.debug(recommendation)
+        recommendation.id = None
+        recommendation.create()
+        self.assertIsNotNone(recommendation.id)
+        # Fetch it back
+        found_recommendation = Recommendation.find(recommendation.id)
+        self.assertEqual(found_recommendation.id, recommendation.id)
+        self.assertEqual(found_recommendation.name, recommendation.name)
+        self.assertEqual(
+            found_recommendation.recommendationType, EnumRecommendationType.UNKNOWN
+        )
+
+        self.assertEqual(
+            found_recommendation.recommendationName, recommendation.recommendationName
+        )
+        self.assertEqual(
+            found_recommendation.recommendationID, recommendation.recommendationID
+        )
 
     # Todo: Add your test cases here...
