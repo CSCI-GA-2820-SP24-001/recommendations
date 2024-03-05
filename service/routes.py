@@ -124,21 +124,21 @@ def create_recommendations():
 # ######################################################################
 # # DELETE A Recommendation
 # ######################################################################
-# @app.route("/recommendations/<int:recommendation_id>", methods=["DELETE"])
-# def delete_Recommendations(recommendation_id):
-#     """
-#     Delete a Recommendation
+@app.route("/recommendations/<int:recommendation_id>", methods=["DELETE"])
+def delete_recommendations(recommendation_id):
+    """
+    Delete a Recommendation
 
-#     This endpoint will delete a Recommendation based the id specified in the path
-#     """
-#     app.logger.info("Request to delete Recommendation with id: %d", recommendation_id)
+    This endpoint will delete a Recommendation based the id specified in the path
+    """
+    app.logger.info("Request to delete recommendation with id: %d", recommendation_id)
 
-#     recommendation = Recommendation.find(recommendation_id)
-#     if recommendation:
-#         recommendation.delete()
+    recommendation = Recommendation.find(recommendation_id)
+    if recommendation:
+        recommendation.delete()
 
-#     app.logger.info("Recommendation with ID: %d delete complete.", recommendation_id)
-#     return "", status.HTTP_204_NO_CONTENT
+    app.logger.info("Recommendation with ID: %d delete complete.", recommendation_id)
+    return "", status.HTTP_204_NO_CONTENT
 
 
 ######################################################################
@@ -146,9 +146,9 @@ def create_recommendations():
 # Required extra function (classmethod) to develop
 ######################################################################
 # @app.route("/recommendations", methods=["GET"])
-# def list_pets():
+# def list_recommendations():
 #     """Returns all of the recommendations"""
-#     app.logger.info("Request for pet list")
+#     app.logger.info("Request for recommendation list")
 
 #     recommendations = []
 
@@ -162,7 +162,7 @@ def create_recommendations():
 #     else:
 #         recommendations = Recommendation.all()
 
-#     results = [recommendation.serialize() for pet in recommendations]
+#     results = [recommendation.serialize() for recommendation in recommendations]
 #     app.logger.info("Returning %d recommendations", len(results))
 #     return jsonify(results), status.HTTP_200_OK
 
