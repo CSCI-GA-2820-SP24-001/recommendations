@@ -5,6 +5,7 @@ Test cases for Recommendation Model
 import os
 import logging
 from unittest import TestCase
+from unittest.mock import patch
 from wsgi import app
 from service.models import (
     Recommendation,
@@ -23,7 +24,7 @@ DATABASE_URI = os.getenv(
 #  R E C O M M E N D A T I O N   M O D E L   T E S T   C A S E S
 ######################################################################
 # pylint: disable=too-many-public-methods
-class TestRecommendationModel(TestCase):
+class TestCaseBase(TestCase):
     """Test Cases for Recommendation Model"""
 
     @classmethod
@@ -52,10 +53,29 @@ class TestRecommendationModel(TestCase):
     ######################################################################
     #  T E S T   C A S E S
     ######################################################################
+    def test_create_a_recommendation(self):
+        """It should Create a recommendation and assert that it exists"""
+        recommendation = Recommendation(
+            name="Test_product_name",
+            recommendationType=EnumRecommendationType.UNKNOWN,
+            recommendationName="Test_recommendation_name",
+            recommendationID=0,
+        )
 
-    def test_create_recommendation_model(self):
-        """It should create a Recommendation Model"""
-        # Todo: Remove this test case example
+        self.assertEqual(
+            str(recommendation), "<Recommendation Test_product_name id=[None]>"
+        )
+        self.assertTrue(recommendation is not None)
+        self.assertEqual(recommendation.id, None)
+        self.assertEqual(recommendation.name, "Test_product_name")
+        self.assertEqual(
+            recommendation.recommendationType, EnumRecommendationType.UNKNOWN
+        )
+        self.assertEqual(recommendation.recommendationName, "Test_recommendation_name")
+        self.assertEqual(recommendation.recommendationID, 0)
+
+    def test_add_recommendation_model(self):
+        """It should create a Recommendation and add to the database"""
         recommendation = RecommendationFactory()
         recommendation.create()
         self.assertIsNotNone(recommendation.id)
@@ -66,21 +86,6 @@ class TestRecommendationModel(TestCase):
         self.assertEqual(data.recommendationType, EnumRecommendationType.UNKNOWN)
         self.assertEqual(data.recommendationName, recommendation.recommendationName)
         self.assertEqual(data.recommendationID, recommendation.recommendationID)
-
-    # TODO 
-    # def test_create_a_recommendation(self):
-    #     """It should Create a recommendation and assert that it exists"""
-    #     recommendation = Recommendation(name="Fido", category="dog", available=True, gender=Gender.MALE)
-    #     self.assertEqual(str(recommendation), "<Recommendation Fido id=[None]>")
-    #     self.assertTrue(recommendation is not None)
-    #     self.assertEqual(recommendation.id, None)
-    #     self.assertEqual(recommendation.name, "Fido")
-    #     self.assertEqual(recommendation.category, "dog")
-    #     self.assertEqual(recommendation.available, True)
-    #     self.assertEqual(recommendation.gender, Gender.MALE)
-    #     recommendation = Recommendation(name="Fido", category="dog", available=False, gender=Gender.FEMALE)
-    #     self.assertEqual(recommendation.available, False)
-    #     self.assertEqual(recommendation.gender, Gender.FEMALE)
 
     def test_read_a_recommendation(self):
         """It should Read a Recommendation"""
@@ -104,7 +109,6 @@ class TestRecommendationModel(TestCase):
             found_recommendation.recommendationID, recommendation.recommendationID
         )
 
-    # Todo: Add your test cases here...
     def test_update_a_recommendation(self):
         """It should Update a Recommendation"""
         recommendation = RecommendationFactory()
@@ -153,3 +157,194 @@ class TestRecommendationModel(TestCase):
         # See if we get back 5 recommendations
         recommendations = Recommendation.all()
         self.assertEqual(len(recommendations), 5)
+
+    def test_repr_recommendation(self):
+        """test_repr_recommendation"""
+        recommendation = RecommendationFactory()
+        logging.debug(recommendation)
+        recommendation.id = None
+        recommendation.create()
+        self.assertEqual(
+            repr(recommendation),
+            f"<Recommendation {recommendation.name} id=[{recommendation.id}]>",
+        )
+
+    def test_serialize_a_recommendation(self):
+        """It should serialize a Recommendation"""
+        recommendation = RecommendationFactory()
+        data = recommendation.serialize()
+        self.assertNotEqual(data, None)
+        self.assertIn("id", data)
+        self.assertEqual(data["id"], recommendation.id)
+        self.assertIn("name", data)
+        self.assertEqual(data["name"], recommendation.name)
+        self.assertIn("recommendationType", data)
+        self.assertEqual(
+            data["recommendationType"], recommendation.recommendationType.name
+        )
+        self.assertIn("recommendationName", data)
+        self.assertEqual(data["recommendationName"], recommendation.recommendationName)
+        self.assertIn("recommendationID", data)
+        self.assertEqual(data["recommendationID"], recommendation.recommendationID)
+
+    def test_deserialize_a_recommendation(self):
+        """It should de-serialize a Recommendation"""
+        data = RecommendationFactory().serialize()
+        recommendation = Recommendation()
+        recommendation.deserialize(data)
+        self.assertNotEqual(recommendation, None)
+        self.assertEqual(recommendation.id, None)
+        self.assertEqual(recommendation.name, data["name"])
+        self.assertEqual(
+            data["recommendationType"], recommendation.recommendationType.name
+        )
+        self.assertEqual(data["recommendationName"], recommendation.recommendationName)
+        self.assertEqual(data["recommendationID"], recommendation.recommendationID)
+
+    def test_deserialize_missing_data(self):
+        """It should not deserialize a Recommendation with missing data"""
+        data = {
+            "id": 1,
+            "name": "test_deserialize_name",
+            "recommendationName": "test_deserialize_recommendationName",
+        }
+        recommendation = Recommendation()
+        self.assertRaises(DataValidationError, recommendation.deserialize, data)
+
+    def test_deserialize_bad_data(self):
+        """It should not deserialize bad data"""
+        data = "this is not a dictionary"
+        recommendation = Recommendation()
+        self.assertRaises(DataValidationError, recommendation.deserialize, data)
+
+    # def test_deserialize_bad_available(self):
+    #     """It should not deserialize a bad available attribute"""
+    #     test_recommendation = RecommendationFactory()
+    #     data = test_recommendation.serialize()
+    #     data["available"] = "true"
+    #     recommendation = Recommendation()
+    #     self.assertRaises(DataValidationError, recommendation.deserialize, data)
+
+    # def test_deserialize_bad_EnumRecommendationType(self):
+    #     """It should not deserialize a bad EnumRecommendationType attribute"""
+    #     test_recommendation = RecommendationFactory()
+    #     data = test_recommendation.serialize()
+    #     data["recommendationType"] = EnumRecommendationType.ACCESSORY  # wrong case
+    #     recommendation = Recommendation()
+    #     self.assertRaises(DataValidationError, recommendation.deserialize, data)
+
+
+######################################################################
+#  T E S T   E X C E P T I O N   H A N D L E R S
+######################################################################
+class TestExceptionHandlers(TestCaseBase):
+    """Recommendation Model Exception Handlers"""
+
+    @patch("service.models.db.session.commit")
+    def test_create_exception(self, exception_mock):
+        """It should catch a create exception"""
+        exception_mock.side_effect = Exception()
+        recommendation = RecommendationFactory()
+        self.assertRaises(DataValidationError, recommendation.create)
+
+    @patch("service.models.db.session.commit")
+    def test_update_exception(self, exception_mock):
+        """It should catch a update exception"""
+        exception_mock.side_effect = Exception()
+        recommendation = RecommendationFactory()
+        self.assertRaises(DataValidationError, recommendation.update)
+
+    @patch("service.models.db.session.commit")
+    def test_delete_exception(self, exception_mock):
+        """It should catch a delete exception"""
+        exception_mock.side_effect = Exception()
+        recommendation = RecommendationFactory()
+        self.assertRaises(DataValidationError, recommendation.delete)
+
+    # @patch("service.models.db.session.commit")
+    # def test_deserialize_exception(self, exception_mock):
+    #     """It should catch deserialize exception"""
+    #     exception_mock.side_effect = AttributeError("Invalid attribute")
+    #     data = RecommendationFactory()
+    #     recommendation = RecommendationFactory()
+    #     self.assertRaises(DataValidationError, recommendation.deserialize, data)
+
+    # def test_deserialize_bad_EnumRecommendationType(self):
+    #     """It should not deserialize a bad EnumRecommendationType attribute"""
+    #     test_recommendation = RecommendationFactory()
+    #     data = test_recommendation.serialize()
+    #     data["recommendationType"] = EnumRecommendationType.ACCESSORY  # wrong case
+    #     recommendation = Recommendation()
+    #     self.assertRaises(DataValidationError, recommendation.deserialize, data)
+
+
+######################################################################
+#  Q U E R Y   T E S T   C A S E S
+######################################################################
+# class TestModelQueries(TestCaseBase):
+#     """Recommendation Model Query Tests"""
+
+#     def test_find_recommendation(self):
+#         """It should Find a Recommendation by ID"""
+#         recommendations = RecommendationFactory.create_batch(5)
+#         for recommendation in recommendations:
+#             recommendation.create()
+#         logging.debug(recommendations)
+#         # make sure they got saved
+#         self.assertEqual(len(Recommendation.all()), 5)
+#         # find the 2nd recommendation in the list
+#         recommendation = Recommendation.find(recommendations[1].id)
+#         self.assertIsNot(recommendation, None)
+#         self.assertEqual(recommendation.id, recommendations[1].id)
+#         self.assertEqual(recommendation.name, recommendations[1].name)
+#         self.assertEqual(recommendation.available, recommendations[1].available)
+#         self.assertEqual(recommendation.gender, recommendations[1].gender)
+#         self.assertEqual(recommendation.birthday, recommendations[1].birthday)
+
+#     def test_find_by_category(self):
+#         """It should Find Recommendations by Category"""
+#         recommendations = RecommendationFactory.create_batch(10)
+#         for recommendation in recommendations:
+#             recommendation.create()
+#         category = recommendations[0].category
+#         count = len([recommendation for recommendation in recommendations if recommendation.category == category])
+#         found = Recommendation.find_by_category(category)
+#         self.assertEqual(found.count(), count)
+#         for recommendation in found:
+#             self.assertEqual(recommendation.category, category)
+
+#     def test_find_by_name(self):
+#         """It should Find a Recommendation by Name"""
+#         recommendations = RecommendationFactory.create_batch(10)
+#         for recommendation in recommendations:
+#             recommendation.create()
+#         name = recommendations[0].name
+#         count = len([recommendation for recommendation in recommendations if recommendation.name == name])
+#         found = Recommendation.find_by_name(name)
+#         self.assertEqual(found.count(), count)
+#         for recommendation in found:
+#             self.assertEqual(recommendation.name, name)
+
+#     def test_find_by_availability(self):
+#         """It should Find Recommendations by Availability"""
+#         recommendations = RecommendationFactory.create_batch(10)
+#         for recommendation in recommendations:
+#             recommendation.create()
+#         available = recommendations[0].available
+#         count = len([recommendation for recommendation in recommendations if recommendation.available == available])
+#         found = Recommendation.find_by_availability(available)
+#         self.assertEqual(found.count(), count)
+#         for recommendation in found:
+#             self.assertEqual(recommendation.available, available)
+
+#     def test_find_by_gender(self):
+#         """It should Find Recommendations by Gender"""
+#         recommendations = RecommendationFactory.create_batch(10)
+#         for recommendation in recommendations:
+#             recommendation.create()
+#         gender = recommendations[0].gender
+#         count = len([recommendation for recommendation in recommendations if recommendation.gender == gender])
+#         found = Recommendation.find_by_gender(gender)
+#         self.assertEqual(found.count(), count)
+#         for recommendation in found:
+#             self.assertEqual(recommendation.gender, gender)

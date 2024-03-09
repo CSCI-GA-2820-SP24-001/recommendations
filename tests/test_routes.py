@@ -68,7 +68,6 @@ class TestRecommendationService(TestCase):
     ######################################################################
     #  P L A C E   T E S T   C A S E S   H E R E
     ######################################################################
-
     def test_index(self):
         """It should call the home page"""
         resp = self.client.get("/")
@@ -158,6 +157,56 @@ class TestRecommendationService(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         data = response.get_json()
         self.assertEqual(len(data), 5)
+
+
+######################################################################
+#  T E S T   S A D   P A T H S
+######################################################################
+class TestSadPaths(TestCase):
+    """Test REST Exception Handling"""
+
+    def setUp(self):
+        """Runs before each test"""
+        self.client = app.test_client()
+
+    def test_method_not_allowed(self):
+        """It should not allow update without a recommendation id"""
+        response = self.client.put(BASE_URL)
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def test_create_recommendation_no_data(self):
+        """It should not Create a Recommendation with missing data"""
+        response = self.client.post(BASE_URL, json={})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_create_recommendation_no_content_type(self):
+        """It should not Create a Recommendation with no content type"""
+        response = self.client.post(BASE_URL)
+        self.assertEqual(response.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+
+    def test_create_recommendation_wrong_content_type(self):
+        """It should not Create a Recommendation with the wrong content type"""
+        response = self.client.post(BASE_URL, data="hello", content_type="text/html")
+        self.assertEqual(response.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+
+    # def test_create_recommendation_bad_available(self):
+    #     """It should not Create a Recommendation with bad available data"""
+    #     test_recommendation = RecommendationFactory()
+    #     logging.debug(test_recommendation)
+    #     # change available to a string
+    #     test_recommendation.available = "true"
+    #     response = self.client.post(BASE_URL, json=test_recommendation.serialize())
+    #     self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    # def test_create_recommendation_bad_gender(self):
+    #     """It should not Create a Recommendation with bad gender data"""
+    #     recommendation = RecommendationFactory()
+    #     logging.debug(recommendation)
+    #     # change gender to a bad string
+    #     test_recommendation = recommendation.serialize()
+    #     test_recommendation["gender"] = "male"  # wrong case
+    #     response = self.client.post(BASE_URL, json=test_recommendation)
+    #     self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 
 # TODO Build the test route when function get implemented
