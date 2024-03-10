@@ -6,13 +6,8 @@ import os
 import logging
 from unittest import TestCase
 from wsgi import app
-from service.models import (
-    Recommendation,
-    EnumRecommendationType,
-    DataValidationError,
-    db,
-)
-from .factories import RecommendationFactory
+from service.models import YourResourceModel, DataValidationError, db
+from .factories import YourResourceModelFactory
 
 DATABASE_URI = os.getenv(
     "DATABASE_URI", "postgresql+psycopg://postgres:postgres@localhost:5432/testdb"
@@ -20,11 +15,11 @@ DATABASE_URI = os.getenv(
 
 
 ######################################################################
-#  R E C O M M E N D A T I O N   M O D E L   T E S T   C A S E S
+#  YourResourceModel   M O D E L   T E S T   C A S E S
 ######################################################################
 # pylint: disable=too-many-public-methods
-class TestRecommendationModel(TestCase):
-    """Test Cases for Recommendation Model"""
+class TestYourResourceModel(TestCase):
+    """Test Cases for YourResourceModel Model"""
 
     @classmethod
     def setUpClass(cls):
@@ -42,7 +37,7 @@ class TestRecommendationModel(TestCase):
 
     def setUp(self):
         """This runs before each test"""
-        db.session.query(Recommendation).delete()  # clean up the last tests
+        db.session.query(YourResourceModel).delete()  # clean up the last tests
         db.session.commit()
 
     def tearDown(self):
@@ -53,21 +48,15 @@ class TestRecommendationModel(TestCase):
     #  T E S T   C A S E S
     ######################################################################
 
-    def test_create_recommendation_model(self):
-        """It should create a Recommendation Model"""
+    def test_example_replace_this(self):
+        """It should create a YourResourceModel"""
         # Todo: Remove this test case example
-        recommendation = RecommendationFactory()
-        recommendation.create()
-        self.assertIsNotNone(recommendation.id)
-        found = Recommendation.all()
+        resource = YourResourceModelFactory()
+        resource.create()
+        self.assertIsNotNone(resource.id)
+        found = YourResourceModel.all()
         self.assertEqual(len(found), 1)
-        data = Recommendation.find(recommendation.id)
-        self.assertEqual(data.name, recommendation.name)
-        # TODO: This has error, data.recommendationType seems be generated ramdomly.
-        # So maybe just don't check this here
-        # self.assertEqual(data.recommendationType, EnumRecommendationType.UNKNOWN)
-
-        self.assertEqual(data.recommendationName, recommendation.recommendationName)
-        self.assertEqual(data.recommendationID, recommendation.recommendationID)
+        data = YourResourceModel.find(resource.id)
+        self.assertEqual(data.name, resource.name)
 
     # Todo: Add your test cases here...
