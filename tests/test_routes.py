@@ -161,13 +161,6 @@ class TestYourResourceService(TestCase):
         #     test_recommendation.recommendationType.name,
         # )
 
-
-# TODO Build the test route when function get implemented
-# def test_get_recommendation(self):
-=======
-    # Test route for get Function (Read)
-    # def test_get_recommendation(self):
-
     def test_get_recommendation(self):
         """It should Get a single Recommendation"""
         # get the id of a recommendation
