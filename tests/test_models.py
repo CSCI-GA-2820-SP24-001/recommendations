@@ -71,8 +71,7 @@ class TestRecommendationModel(TestCase):
         self.assertEqual(data.recommendationID, recommendation.recommendationID)
 
     # Todo: Add your test cases here...
-
-    def test_update_recommendation(self):
+        def test_update_recommendation(self):
         """It should Update an existing Recommendation"""
         # create a recommendation to update
         test_recommendation = RecommendationFactory()
