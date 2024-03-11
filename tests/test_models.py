@@ -69,27 +69,3 @@ class TestRecommendationModel(TestCase):
 
         self.assertEqual(data.recommendationName, recommendation.recommendationName)
         self.assertEqual(data.recommendationID, recommendation.recommendationID)
-
-    # Todo: Add your test cases here...
-        def test_update_recommendation(self):
-        """It should Update an existing Recommendation"""
-        # create a recommendation to update
-        test_recommendation = RecommendationFactory()
-        response = self.client.post(BASE_URL, json=test_recommendation.serialize())
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-
-        # update the recommendation
-        new_recommendation = response.get_json()
-        logging.debug(new_recommendation)
-
-        new_recommendation["recommendationName"] = "unknown"
-        new_recommendation["recommendationID"] = 0
-
-        response = self.client.put(
-            f"{BASE_URL}/{new_recommendation['id']}", json=new_recommendation
-        )
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        updated_recommendation = response.get_json()
-
-        self.assertEqual(updated_recommendation["recommendationName"], "unknown")
-        self.assertEqual(updated_recommendation["recommendationID"], 0)
