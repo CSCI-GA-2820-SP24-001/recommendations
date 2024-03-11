@@ -139,6 +139,25 @@ class TestYourResourceService(TestCase):
 #     logging.debug("Response data = %s", data)
 #     self.assertIn("was not found", data["message"])
 #############
-# def test_update_recommendation(self):
+def test_update_a_recommendation(self):
+        """It should Update a Recommendation"""
+        recommendation = RecommendationFactory()
+        logging.debug(recommendation)
+        recommendation.id = None
+        recommendation.create()
+        logging.debug(recommendation)
+        self.assertIsNotNone(recommendation.id)
+        # Change it an save it
+        recommendation.category = "k9"
+        original_id = recommendation.id
+        recommendation.update()
+        self.assertEqual(recommendation.id, original_id)
+        self.assertEqual(recommendation.category, "k9")
+        # Fetch it back and make sure the id hasn't changed
+        # but the data did change
+        recommendations = Recommendation.all()
+        self.assertEqual(len(recommendations), 1)
+        self.assertEqual(recommendations[0].id, original_id)
+        self.assertEqual(recommendations[0].category, "k9")
 # def test_list_recommendation(self):
 # def test_delete_recommendation(self):
