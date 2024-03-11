@@ -19,8 +19,9 @@ we will only need to chang serialize and deserialize
 """
 
 import logging
-from flask_sqlalchemy import SQLAlchemy
 from enum import Enum
+from flask_sqlalchemy import SQLAlchemy
+
 
 logger = logging.getLogger("flask.app")
 

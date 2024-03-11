@@ -94,32 +94,32 @@ def create_recommendations():
     return jsonify(message), status.HTTP_201_CREATED, {"Location": location_url}
 
 
-# ######################################################################
-# # UPDATE AN EXISTING Recommendation
-# ######################################################################
-# @app.route("/recommendations/<int:recommendation_id>", methods=["PUT"])
-# def update_recommendations(recommendation_id):
-#     """
-#     Update a Recommendation
+######################################################################
+# UPDATE AN EXISTING RECOMMENDATION
+######################################################################
+@app.route("/recommendations/<int:recommendations_id>", methods=["PUT"])
+def update_recommendations(recommendations_id):
+    """
+    Update a Recommendation
 
-#     This endpoint will update a Recommendation based the body that is posted
-#     """
-#     app.logger.info("Request to update Recommendation with id: %d", recommendation_id)
-#     check_content_type("application/json")
+    This endpoint will update a Recommendation based the body that is posted
+    """
+    app.logger.info("Request to update recommendations with id: %d", recommendations_id)
+    check_content_type("application/json")
 
-#     recommendation = Recommendation.find(recommendation_id)
-#     if not Recommendation:
-#         error(
-#             status.HTTP_404_NOT_FOUND,
-#             f"Recommendation with id: '{recommendation_id}' was not found.",
-#         )
+    recommendations = Recommendation.find(recommendations_id)
+    if not recommendations:
+        error(
+            status.HTTP_404_NOT_FOUND,
+            f"Recommendation with id: '{recommendations_id}' was not found.",
+        )
 
-#     recommendation.deserialize(request.get_json())
-#     recommendation.id = recommendation_id
-#     recommendation.update()
+    recommendations.deserialize(request.get_json())
+    recommendations.id = recommendations_id
+    recommendations.update()
 
-#     app.logger.info("Recommendation with ID: %d updated.", recommendation.id)
-#     return jsonify(recommendation.serialize()), status.HTTP_200_OK
+    app.logger.info("Recommendation with ID: %d updated.", recommendations.id)
+    return jsonify(recommendations.serialize()), status.HTTP_200_OK
 
 
 # ######################################################################
