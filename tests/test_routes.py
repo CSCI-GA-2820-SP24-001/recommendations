@@ -65,6 +65,22 @@ class TestYourResourceService(TestCase):
         """This runs after each test"""
         db.session.remove()
 
+    def _create_recommendations(self, count):
+        """Factory method to create recommendations in bulk"""
+        recommendations = []
+        for _ in range(count):
+            test_recommendation = RecommendationFactory()
+            response = self.client.post(BASE_URL, json=test_recommendation.serialize())
+            self.assertEqual(
+                response.status_code,
+                status.HTTP_201_CREATED,
+                "Could not create test recommendation",
+            )
+            new_recommendation = response.get_json()
+            test_recommendation.id = new_recommendation["id"]
+            recommendations.append(test_recommendation)
+        return recommendations
+
     ######################################################################
     #  P L A C E   T E S T   C A S E S   H E R E
     ######################################################################
@@ -117,8 +133,33 @@ class TestYourResourceService(TestCase):
             test_recommendation.recommendationType.name,
         )
 
-    # Test route for get Function (Read)
-    # def test_get_recommendation(self):
+    def test_delete_recommendation(self):
+        """It should Delete a Recommendation"""
+        test_recommendation = self._create_recommendations(1)[0]
+        response = self.client.delete(f"{BASE_URL}/{test_recommendation.id}")
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(len(response.data), 0)
+        # make sure they are deleted
+        response = self.client.get(f"{BASE_URL}/{test_recommendation.id}")
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+        TODO: Uncomment this code get_recommendations is implemented
+        Check that the location header was correct
+        response = self.client.get(location)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        new_recommendation = response.get_json()
+        self.assertEqual(new_recommendation["name"], test_recommendation.name)
+        self.assertEqual(
+            new_recommendation["recommendationName"],
+            test_recommendation.recommendationName,
+        )
+        self.assertEqual(
+            new_recommendation["recommendationID"], test_recommendation.recommendationID
+        )
+        self.assertEqual(
+            new_recommendation["recommendationType"],
+            test_recommendation.recommendationType.name,
+        )
 
     def test_get_recommendation(self):
         """It should Get a single Recommendation"""
@@ -139,25 +180,28 @@ class TestYourResourceService(TestCase):
 #     logging.debug("Response data = %s", data)
 #     self.assertIn("was not found", data["message"])
 #############
+
+
 def test_update_a_recommendation(self):
-        """It should Update a Recommendation"""
-        recommendation = RecommendationFactory()
-        logging.debug(recommendation)
-        recommendation.id = None
-        recommendation.create()
-        logging.debug(recommendation)
-        self.assertIsNotNone(recommendation.id)
-        # Change it an save it
-        recommendation.category = "k9"
-        original_id = recommendation.id
-        recommendation.update()
-        self.assertEqual(recommendation.id, original_id)
-        self.assertEqual(recommendation.category, "k9")
-        # Fetch it back and make sure the id hasn't changed
-        # but the data did change
-        recommendations = Recommendation.all()
-        self.assertEqual(len(recommendations), 1)
-        self.assertEqual(recommendations[0].id, original_id)
-        self.assertEqual(recommendations[0].category, "k9")
+    """It should Update a Recommendation"""
+    recommendation = RecommendationFactory()
+    logging.debug(recommendation)
+    recommendation.id = None
+    recommendation.create()
+    logging.debug(recommendation)
+    self.assertIsNotNone(recommendation.id)
+    # Change it an save it
+    recommendation.category = "k9"
+    original_id = recommendation.id
+    recommendation.update()
+    self.assertEqual(recommendation.id, original_id)
+    self.assertEqual(recommendation.category, "k9")
+    # Fetch it back and make sure the id hasn't changed
+    # but the data did change
+    recommendations = Recommendation.all()
+    self.assertEqual(len(recommendations), 1)
+    self.assertEqual(recommendations[0].id, original_id)
+    self.assertEqual(recommendations[0].category, "k9")
+
+
 # def test_list_recommendation(self):
-# def test_delete_recommendation(self):
