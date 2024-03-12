@@ -19,9 +19,8 @@ we will only need to chang serialize and deserialize
 """
 
 import logging
-from enum import Enum
 from flask_sqlalchemy import SQLAlchemy
-
+from enum import Enum
 
 logger = logging.getLogger("flask.app")
 
@@ -84,6 +83,8 @@ class Recommendation(db.Model):
         Updates a Recommendation to the database
         """
         logger.info("Saving %s", self.name)
+        if not self.id:
+            raise DataValidationError("Update called with empty ID field")
         try:
             db.session.commit()
         except Exception as e:
