@@ -57,6 +57,16 @@ tests/                     - test cases package
 └── test_routes.py         - test suite for service routes
 ```
 
+## REST APIs
+|Method     |  Endpoint               |  Description                        |
+|-------    |  ---------------------  |  ---------------------------------  |
+|POST       |  /recommendations       |  Creates a new recommendation       |
+|GET        |  /recommendations       |  Lists all recommendations          |
+|GET        |  /recommendations/{id}  |  Retrieves a recommendation         |
+|PUT        |  /recommendations/{id}  |  Updates a recommendation           |
+|DELETE     |  /recommendations/{id}  |  Deletes a recommendation           |
+
+
 ## License
 
 Copyright (c) 2016, 2024 [John Rofrano](https://www.linkedin.com/in/JohnRofrano/). All rights reserved.
