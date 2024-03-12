@@ -1,5 +1,5 @@
 """
-Models for Recommendation
+Models for recommendation service
 
 Models
 ------
@@ -7,15 +7,12 @@ Recommendation - A Recommendation used in the Recommendation
 
 Attributes:
 -----------
-name (string) - the name of the pet
+name (string) - the name of the product
 recommendationType (enum) - the recommendation type (cross-sell, up-sell...etc)
 recommendation (string) - recommendation product
 
-All of the models are stored in this module
-
-Note :
-we will only need to chang serialize and deserialize
-
+recommendationName (string) - recommendation name
+recommendationID (int) - recommendation id
 """
 
 import logging

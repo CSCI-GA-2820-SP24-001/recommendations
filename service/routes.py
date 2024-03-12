@@ -94,25 +94,25 @@ def get_recommendations(recommendation_id):
 ######################################################################
 # UPDATE AN EXISTING RECOMMENDATION
 ######################################################################
-@app.route("/recommendations/<int:recommendations_id>", methods=["PUT"])
-def update_recommendations(recommendations_id):
+@app.route("/recommendations/<int:recommendation_id>", methods=["PUT"])
+def update_recommendations(recommendation_id):
     """
     Update a Recommendation
 
     This endpoint will update a Recommendation based the body that is posted
     """
-    app.logger.info("Request to update recommendations with id: %d", recommendations_id)
+    app.logger.info("Request to update recommendations with id: %d", recommendation_id)
     check_content_type("application/json")
 
-    recommendations = Recommendation.find(recommendations_id)
+    recommendations = Recommendation.find(recommendation_id)
     if not recommendations:
         error(
             status.HTTP_404_NOT_FOUND,
-            f"Recommendation with id: '{recommendations_id}' was not found.",
+            f"Recommendation with id: '{recommendation_id}' was not found.",
         )
 
     recommendations.deserialize(request.get_json())
-    recommendations.id = recommendations_id
+    recommendations.id = recommendation_id
     recommendations.update()
 
     app.logger.info("Recommendation with ID: %d updated.", recommendations.id)
@@ -122,20 +122,20 @@ def update_recommendations(recommendations_id):
 ######################################################################
 # DELETE A RECOMMENDATION
 ######################################################################
-@app.route("/recommendations/<int:recommendations_id>", methods=["DELETE"])
-def delete_recommendations(recommendations_id):
+@app.route("/recommendations/<int:recommendation_id>", methods=["DELETE"])
+def delete_recommendations(recommendation_id):
     """
     Delete a Recommendation
 
     This endpoint will delete a Recommendation based the id specified in the path
     """
-    app.logger.info("Request to delete recommendations with id: %d", recommendations_id)
+    app.logger.info("Request to delete recommendations with id: %d", recommendation_id)
 
-    recommendations = Recommendation.find(recommendations_id)
+    recommendations = Recommendation.find(recommendation_id)
     if recommendations:
         recommendations.delete()
 
-    app.logger.info("Recommendation with ID: %d delete complete.", recommendations_id)
+    app.logger.info("Recommendation with ID: %d delete complete.", recommendation_id)
     return "", status.HTTP_204_NO_CONTENT
 
 
