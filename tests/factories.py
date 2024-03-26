@@ -20,6 +20,6 @@ class RecommendationFactory(factory.Factory):
     # Add your other attributes here...
     id = factory.Sequence(lambda n: n)
     name = factory.Faker("name")
-    recommendationType = EnumRecommendationType.UNKNOWN
-    recommendationName = FuzzyChoice(choices=["apple", "banana", "steak", "fish"])
-    recommendationID = factory.Sequence(lambda n: n)
+    recommendation_type = EnumRecommendationType.UNKNOWN
+    recommendation_name = FuzzyChoice(choices=["apple", "banana", "steak", "fish"])
+    recommendation_id = factory.Sequence(lambda n: n)

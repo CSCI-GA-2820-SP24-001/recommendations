@@ -18,7 +18,7 @@
 Recommendation Store Service
 
 This service implements a REST API that allows you to Create, Read, Update
-and Delete Recommendations from the inventory of recommendations in the Recommendation Shop
+and Delete Recommendations from the inventory of recommendations in the RecommendationShop
 """
 
 from flask import jsonify, request, url_for, abort
@@ -61,7 +61,7 @@ def create_recommendations():
     recommendation.create()
     message = recommendation.serialize()
     location_url = url_for(
-        "get_recommendations", product_id=recommendation.id, _external=True
+        "get_recommendations", recommendation_id=recommendation.id, _external=True
     )
 
     app.logger.info("Recommendation with ID: %d created.", recommendation.id)
@@ -71,20 +71,20 @@ def create_recommendations():
 ######################################################################
 # READ A Recommendation
 ######################################################################
-@app.route("/recommendations/<int:product_id>", methods=["GET"])
-def get_recommendations(product_id):
+@app.route("/recommendations/<int:recommendation_id>", methods=["GET"])
+def get_recommendations(recommendation_id):
     """
     Retrieve a single Recommendation
 
     This endpoint will return a Recommendation based on it's id
     """
-    app.logger.info("Request for recommendation with id: %s", product_id)
+    app.logger.info("Request for recommendation with id: %s", recommendation_id)
 
-    recommendation = Recommendation.find(product_id)
+    recommendation = Recommendation.find(recommendation_id)
     if not recommendation:
         error(
             status.HTTP_404_NOT_FOUND,
-            f"Recommendation with id '{product_id}' was not found.",
+            f"Recommendation with id '{recommendation_id}' was not found.",
         )
 
     app.logger.info("Returning recommendation: %s", recommendation.name)
@@ -94,83 +94,25 @@ def get_recommendations(product_id):
 ######################################################################
 # UPDATE AN EXISTING RECOMMENDATION
 ######################################################################
-@app.route("/recommendations/<int:product_id>", methods=["PUT"])
-def update_recommendations(product_id):
+@app.route("/recommendations/<int:recommendation_id>", methods=["PUT"])
+def update_recommendations(recommendation_id):
     """
     Update a Recommendation
 
     This endpoint will update a Recommendation based the body that is posted
     """
-    app.logger.info("Request to update recommendations with id: %d", product_id)
+    app.logger.info("Request to update recommendations with id: %d", recommendation_id)
     check_content_type("application/json")
 
-    recommendations = Recommendation.find(product_id)
+    recommendations = Recommendation.find(recommendation_id)
     if not recommendations:
         error(
             status.HTTP_404_NOT_FOUND,
-            f"Recommendation with id: '{product_id}' was not found.",
+            f"Recommendation with id: '{recommendation_id}' was not found.",
         )
 
     recommendations.deserialize(request.get_json())
-    recommendations.id = product_id
-    recommendations.update()
-
-    app.logger.info("Recommendation with ID: %d updated.", recommendations.id)
-    return jsonify(recommendations.serialize()), status.HTTP_200_OK
-
-
-######################################################################
-# UPDATE AN EXISTING RECOMMENDATION ID for the product
-######################################################################
-@app.route(
-    "/recommendations/<int:product_id>/<int:recommendations_id>", methods=["PUT"]
-)
-def update_recommendations_id(product_id, recommendations_id):
-    """
-    Update a Recommendation id for a product
-
-    This endpoint will update a Recommendation based the body that is posted
-    """
-    app.logger.info("Request to update recommendations with id: %d", product_id)
-    check_content_type("application/json")
-
-    recommendations = Recommendation.find(product_id)
-    if not recommendations:
-        error(
-            status.HTTP_404_NOT_FOUND,
-            f"Recommendation with id: '{product_id}' was not found.",
-        )
-
-    recommendations.deserialize(request.get_json())
-    recommendations.recommendationID = recommendations_id
-    recommendations.update()
-
-    app.logger.info("Recommendation with ID: %d updated.", recommendations.id)
-    return jsonify(recommendations.serialize()), status.HTTP_200_OK
-
-
-######################################################################
-# UPDATE AN EXISTING RECOMMENDATION name for the product
-######################################################################
-@app.route("/recommendations/<int:product_id>/<name>", methods=["PUT"])
-def update_recommendations_name(product_id, name):
-    """
-    Update a Recommendation name for a product
-
-    This endpoint will update a Recommendation based the body that is posted
-    """
-    app.logger.info("Request to update recommendations with id: %d", product_id)
-    check_content_type("application/json")
-
-    recommendations = Recommendation.find(product_id)
-    if not recommendations:
-        error(
-            status.HTTP_404_NOT_FOUND,
-            f"Recommendation with id: '{product_id}' was not found.",
-        )
-
-    recommendations.deserialize(request.get_json())
-    recommendations.recommendationName = name
+    recommendations.id = recommendation_id
     recommendations.update()
 
     app.logger.info("Recommendation with ID: %d updated.", recommendations.id)
@@ -180,20 +122,20 @@ def update_recommendations_name(product_id, name):
 ######################################################################
 # DELETE A RECOMMENDATION
 ######################################################################
-@app.route("/recommendations/<int:product_id>", methods=["DELETE"])
-def delete_recommendations(product_id):
+@app.route("/recommendations/<int:recommendation_id>", methods=["DELETE"])
+def delete_recommendations(recommendation_id):
     """
     Delete a Recommendation
 
     This endpoint will delete a Recommendation based the id specified in the path
     """
-    app.logger.info("Request to delete recommendations with id: %d", product_id)
+    app.logger.info("Request to delete recommendations with id: %d", recommendation_id)
 
-    recommendations = Recommendation.find(product_id)
+    recommendations = Recommendation.find(recommendation_id)
     if recommendations:
         recommendations.delete()
 
-    app.logger.info("Recommendation with ID: %d delete complete.", product_id)
+    app.logger.info("Recommendation with ID: %d delete complete.", recommendation_id)
     return "", status.HTTP_204_NO_CONTENT
 
 
