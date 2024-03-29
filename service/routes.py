@@ -120,15 +120,15 @@ def update_recommendations(recommendation_id):
 
 
 ######################################################################
-# UPDATE AN EXISTING RECOMMENDATION ID for the product
+# LINK AN RECOMMENDATION ID TO A EXISTING PRODUCT
 ######################################################################
 @app.route(
     "/recommendations/<int:product_id>/<int:recommendations_id>", methods=["PUT"]
 )
 def update_recommendations_id(product_id, recommendations_id):
     """
-    Update a Recommendation id for a product
-    This endpoint will update a Recommendation based the body that is posted
+    Link a recommendation id to an existing product
+    This endpoint will lina a recommendation id to a product.
     """
     app.logger.info("Request to update recommendations with id: %d", product_id)
     check_content_type("application/json")
@@ -149,13 +149,13 @@ def update_recommendations_id(product_id, recommendations_id):
 
 
 ######################################################################
-# UPDATE AN EXISTING RECOMMENDATION name for the product
+# LINK AN RECOMMENDATION NAME TO A EXISTING PRODUCT
 ######################################################################
 @app.route("/recommendations/<int:product_id>/<name>", methods=["PUT"])
 def update_recommendations_name(product_id, name):
     """
-    Update a Recommendation name for a product
-    This endpoint will update a Recommendation based the body that is posted
+    Link a recommendation name to an existing product
+    This endpoint will lina a recommendation name to a product.
     """
     app.logger.info("Request to update recommendations with id: %d", product_id)
     check_content_type("application/json")
