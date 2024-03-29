@@ -57,9 +57,9 @@ class TestCaseBase(TestCase):
         """It should Create a recommendation and assert that it exists"""
         recommendation = Recommendation(
             name="Test_product_name",
-            recommendation_type=EnumRecommendationType.UNKNOWN,
-            recommendation_name="Test_recommendation_name",
-            recommendation_id=0,
+            recommendationType=EnumRecommendationType.UNKNOWN,
+            recommendationName="Test_recommendation_name",
+            recommendationID=0,
         )
 
         self.assertEqual(
@@ -69,10 +69,10 @@ class TestCaseBase(TestCase):
         self.assertEqual(recommendation.id, None)
         self.assertEqual(recommendation.name, "Test_product_name")
         self.assertEqual(
-            recommendation.recommendation_type, EnumRecommendationType.UNKNOWN
+            recommendation.recommendationType, EnumRecommendationType.UNKNOWN
         )
-        self.assertEqual(recommendation.recommendation_name, "Test_recommendation_name")
-        self.assertEqual(recommendation.recommendation_id, 0)
+        self.assertEqual(recommendation.recommendationName, "Test_recommendation_name")
+        self.assertEqual(recommendation.recommendationID, 0)
 
     def test_add_recommendation_model(self):
         """It should create a Recommendation and add to the database"""
@@ -83,9 +83,9 @@ class TestCaseBase(TestCase):
         self.assertEqual(len(found), 1)
         data = Recommendation.find(recommendation.id)
         self.assertEqual(data.name, recommendation.name)
-        self.assertEqual(data.recommendation_type, EnumRecommendationType.UNKNOWN)
-        self.assertEqual(data.recommendation_name, recommendation.recommendation_name)
-        self.assertEqual(data.recommendation_id, recommendation.recommendation_id)
+        self.assertEqual(data.recommendationType, EnumRecommendationType.UNKNOWN)
+        self.assertEqual(data.recommendationName, recommendation.recommendationName)
+        self.assertEqual(data.recommendationID, recommendation.recommendationID)
 
     def test_read_a_recommendation(self):
         """It should Read a Recommendation"""
@@ -99,14 +99,14 @@ class TestCaseBase(TestCase):
         self.assertEqual(found_recommendation.id, recommendation.id)
         self.assertEqual(found_recommendation.name, recommendation.name)
         self.assertEqual(
-            found_recommendation.recommendation_type, EnumRecommendationType.UNKNOWN
+            found_recommendation.recommendationType, EnumRecommendationType.UNKNOWN
         )
 
         self.assertEqual(
-            found_recommendation.recommendation_name, recommendation.recommendation_name
+            found_recommendation.recommendationName, recommendation.recommendationName
         )
         self.assertEqual(
-            found_recommendation.recommendation_id, recommendation.recommendation_id
+            found_recommendation.recommendationID, recommendation.recommendationID
         )
 
     def test_update_a_recommendation(self):
@@ -178,16 +178,14 @@ class TestCaseBase(TestCase):
         self.assertEqual(data["id"], recommendation.id)
         self.assertIn("name", data)
         self.assertEqual(data["name"], recommendation.name)
-        self.assertIn("recommendation_type", data)
+        self.assertIn("recommendationType", data)
         self.assertEqual(
-            data["recommendation_type"], recommendation.recommendation_type.name
+            data["recommendationType"], recommendation.recommendationType.name
         )
-        self.assertIn("recommendation_name", data)
-        self.assertEqual(
-            data["recommendation_name"], recommendation.recommendation_name
-        )
-        self.assertIn("recommendation_id", data)
-        self.assertEqual(data["recommendation_id"], recommendation.recommendation_id)
+        self.assertIn("recommendationName", data)
+        self.assertEqual(data["recommendationName"], recommendation.recommendationName)
+        self.assertIn("recommendationID", data)
+        self.assertEqual(data["recommendationID"], recommendation.recommendationID)
 
     def test_deserialize_a_recommendation(self):
         """It should de-serialize a Recommendation"""
@@ -198,19 +196,17 @@ class TestCaseBase(TestCase):
         self.assertEqual(recommendation.id, None)
         self.assertEqual(recommendation.name, data["name"])
         self.assertEqual(
-            data["recommendation_type"], recommendation.recommendation_type.name
+            data["recommendationType"], recommendation.recommendationType.name
         )
-        self.assertEqual(
-            data["recommendation_name"], recommendation.recommendation_name
-        )
-        self.assertEqual(data["recommendation_id"], recommendation.recommendation_id)
+        self.assertEqual(data["recommendationName"], recommendation.recommendationName)
+        self.assertEqual(data["recommendationID"], recommendation.recommendationID)
 
     def test_deserialize_missing_data(self):
         """It should not deserialize a Recommendation with missing data"""
         data = {
             "id": 1,
             "name": "test_deserialize_name",
-            "recommendation_name": "test_deserialize_recommendationName",
+            "recommendationName": "test_deserialize_recommendationName",
         }
         recommendation = Recommendation()
         self.assertRaises(DataValidationError, recommendation.deserialize, data)
@@ -233,7 +229,7 @@ class TestCaseBase(TestCase):
     #     """It should not deserialize a bad EnumRecommendationType attribute"""
     #     test_recommendation = RecommendationFactory()
     #     data = test_recommendation.serialize()
-    #     data["recommendation_type"] = EnumRecommendationType.ACCESSORY  # wrong case
+    #     data["recommendationType"] = EnumRecommendationType.ACCESSORY  # wrong case
     #     recommendation = Recommendation()
     #     self.assertRaises(DataValidationError, recommendation.deserialize, data)
 
@@ -277,7 +273,7 @@ class TestExceptionHandlers(TestCaseBase):
     #     """It should not deserialize a bad EnumRecommendationType attribute"""
     #     test_recommendation = RecommendationFactory()
     #     data = test_recommendation.serialize()
-    #     data["recommendation_type"] = EnumRecommendationType.ACCESSORY  # wrong case
+    #     data["recommendationType"] = EnumRecommendationType.ACCESSORY  # wrong case
     #     recommendation = Recommendation()
     #     self.assertRaises(DataValidationError, recommendation.deserialize, data)
 

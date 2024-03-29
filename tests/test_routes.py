@@ -89,16 +89,15 @@ class TestRecommendationService(TestCase):
         new_recommendation = response.get_json()
         self.assertEqual(new_recommendation["name"], test_recommendation.name)
         self.assertEqual(
-            new_recommendation["recommendation_name"],
-            test_recommendation.recommendation_name,
+            new_recommendation["recommendationName"],
+            test_recommendation.recommendationName,
         )
         self.assertEqual(
-            new_recommendation["recommendation_id"],
-            test_recommendation.recommendation_id,
+            new_recommendation["recommendationID"], test_recommendation.recommendationID
         )
         self.assertEqual(
-            new_recommendation["recommendation_type"],
-            test_recommendation.recommendation_type.name,
+            new_recommendation["recommendationType"],
+            test_recommendation.recommendationType.name,
         )
 
     def test_get_recommendation(self):
@@ -129,8 +128,8 @@ class TestRecommendationService(TestCase):
         new_recommendation = response.get_json()
         logging.debug(new_recommendation)
 
-        new_recommendation["recommendation_name"] = "unknown"
-        new_recommendation["recommendation_id"] = 0
+        new_recommendation["recommendationName"] = "unknown"
+        new_recommendation["recommendationID"] = 0
 
         response = self.client.put(
             f"{BASE_URL}/{new_recommendation['id']}", json=new_recommendation
@@ -138,8 +137,8 @@ class TestRecommendationService(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         updated_recommendation = response.get_json()
 
-        self.assertEqual(updated_recommendation["recommendation_name"], "unknown")
-        self.assertEqual(updated_recommendation["recommendation_id"], 0)
+        self.assertEqual(updated_recommendation["recommendationName"], "unknown")
+        self.assertEqual(updated_recommendation["recommendationID"], 0)
 
     def test_delete_recommendation(self):
         """It should Delete a Recommendation"""
