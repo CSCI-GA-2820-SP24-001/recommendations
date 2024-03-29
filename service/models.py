@@ -8,17 +8,16 @@ Recommendation - A Recommendation used in the Recommendation
 Attributes:
 -----------
 name (string) - the name of the product
-recommendation_type (enum) - the recommendation type (cross-sell, up-sell...etc)
+recommendationType (enum) - the recommendation type (cross-sell, up-sell...etc)
 recommendation (string) - recommendation product
 
-recommendation_name (string) - recommendation name
-recommendation_id (int) - recommendation id
+recommendationName (string) - recommendation name
+recommendationID (int) - recommendation id
 """
 
 import logging
-from enum import Enum
 from flask_sqlalchemy import SQLAlchemy
-
+from enum import Enum
 
 logger = logging.getLogger("flask.app")
 
@@ -51,13 +50,13 @@ class Recommendation(db.Model):
     name = db.Column(db.String(63))
 
     # Todo: Place the rest of your schema here...
-    recommendation_type = db.Column(
+    recommendationType = db.Column(
         db.Enum(EnumRecommendationType),
         nullable=False,
         server_default=(EnumRecommendationType.UNKNOWN.name),
     )
-    recommendation_name = db.Column(db.String(63))
-    recommendation_id = db.Column(db.Integer, primary_key=False)
+    recommendationName = db.Column(db.String(63))
+    recommendationID = db.Column(db.Integer, primary_key=False)
 
     def __repr__(self):
         return f"<Recommendation {self.name} id=[{self.id}]>"
@@ -108,9 +107,9 @@ class Recommendation(db.Model):
         return {
             "id": self.id,
             "name": self.name,
-            "recommendation_type": self.recommendation_type.name,
-            "recommendation_name": self.recommendation_name,
-            "recommendation_id": self.recommendation_id,
+            "recommendationType": self.recommendationType.name,
+            "recommendationName": self.recommendationName,
+            "recommendationID": self.recommendationID,
         }
 
     def deserialize(self, data):
@@ -122,11 +121,11 @@ class Recommendation(db.Model):
         """
         try:
             self.name = data["name"]
-            self.recommendation_type = getattr(
-                EnumRecommendationType, data["recommendation_type"]
+            self.recommendationType = getattr(
+                EnumRecommendationType, data["recommendationType"]
             )  # create enum from string
-            self.recommendation_name = data["recommendation_name"]
-            self.recommendation_id = data["recommendation_id"]
+            self.recommendationName = data["recommendationName"]
+            self.recommendationID = data["recommendationID"]
         except AttributeError as error:
             raise DataValidationError("Invalid attribute: " + error.args[0]) from error
         except KeyError as error:
