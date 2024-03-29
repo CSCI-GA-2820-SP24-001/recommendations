@@ -120,6 +120,62 @@ def update_recommendations(recommendation_id):
 
 
 ######################################################################
+# UPDATE AN EXISTING RECOMMENDATION ID for the product
+######################################################################
+@app.route(
+    "/recommendations/<int:product_id>/<int:recommendations_id>", methods=["PUT"]
+)
+def update_recommendations_id(product_id, recommendations_id):
+    """
+    Update a Recommendation id for a product
+    This endpoint will update a Recommendation based the body that is posted
+    """
+    app.logger.info("Request to update recommendations with id: %d", product_id)
+    check_content_type("application/json")
+
+    recommendations = Recommendation.find(product_id)
+    if not recommendations:
+        error(
+            status.HTTP_404_NOT_FOUND,
+            f"Recommendation with id: '{product_id}' was not found.",
+        )
+
+    recommendations.deserialize(request.get_json())
+    recommendations.recommendation_id = recommendations_id
+    recommendations.update()
+
+    app.logger.info("Recommendation with ID: %d updated.", recommendations.id)
+    return jsonify(recommendations.serialize()), status.HTTP_200_OK
+
+
+######################################################################
+# UPDATE AN EXISTING RECOMMENDATION name for the product
+######################################################################
+@app.route("/recommendations/<int:product_id>/<name>", methods=["PUT"])
+def update_recommendations_name(product_id, name):
+    """
+    Update a Recommendation name for a product
+    This endpoint will update a Recommendation based the body that is posted
+    """
+    app.logger.info("Request to update recommendations with id: %d", product_id)
+    check_content_type("application/json")
+
+    recommendations = Recommendation.find(product_id)
+    if not recommendations:
+        error(
+            status.HTTP_404_NOT_FOUND,
+            f"Recommendation with id: '{product_id}' was not found.",
+        )
+
+    recommendations.deserialize(request.get_json())
+    recommendations.recommendation_name = name
+    recommendations.update()
+
+    app.logger.info("Recommendation with ID: %d updated.", recommendations.id)
+    return jsonify(recommendations.serialize()), status.HTTP_200_OK
+
+
+######################################################################
 # DELETE A RECOMMENDATION
 ######################################################################
 @app.route("/recommendations/<int:recommendation_id>", methods=["DELETE"])

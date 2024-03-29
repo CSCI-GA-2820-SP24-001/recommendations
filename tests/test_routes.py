@@ -141,6 +141,58 @@ class TestRecommendationService(TestCase):
         self.assertEqual(updated_recommendation["recommendation_name"], "unknown")
         self.assertEqual(updated_recommendation["recommendation_id"], 0)
 
+    def test_update_recommendation_id(self):
+        """It should update the recommendation ID for an existing product"""
+        # Create a recommendation to update
+        test_recommendation = RecommendationFactory()
+        response = self.client.post(BASE_URL, json=test_recommendation.serialize())
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        # Fetch the newly created recommendation
+        new_recommendation = response.get_json()
+        logging.debug(new_recommendation)
+
+        # Define a new recommendation ID to update
+        new_recommendation_id = 123  # Example new ID
+
+        # Update the recommendation ID
+        response = self.client.put(
+            f"{BASE_URL}/{new_recommendation['id']}/{new_recommendation_id}",
+            json=new_recommendation,
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        updated_recommendation = response.get_json()
+
+        # Check that the recommendation ID has been updated
+        self.assertEqual(
+            updated_recommendation["recommendation_id"], new_recommendation_id
+        )
+
+    def test_update_recommendation_name(self):
+        """It should update the name of an existing recommendation"""
+        # Create a recommendation to update
+        test_recommendation = RecommendationFactory()
+        response = self.client.post(BASE_URL, json=test_recommendation.serialize())
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        # Fetch the newly created recommendation
+        new_recommendation = response.get_json()
+        logging.debug(new_recommendation)
+
+        # Define a new name for the recommendation
+        new_name = "Updated Recommendation Name"
+
+        # Update the recommendation name
+        response = self.client.put(
+            f"{BASE_URL}/{new_recommendation['id']}/{new_name}",
+            json=new_recommendation,
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        updated_recommendation = response.get_json()
+
+        # Check that the recommendation name has been updated
+        self.assertEqual(updated_recommendation["recommendation_name"], new_name)
+
     def test_delete_recommendation(self):
         """It should Delete a Recommendation"""
         test_recommendation = self._create_recommendations(1)[0]
