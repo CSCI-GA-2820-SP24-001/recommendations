@@ -8,7 +8,7 @@ from unittest import TestCase
 from wsgi import app
 from service.common import status
 from service.models import db, Recommendation
-from .factories import RecommendationFactory
+from tests.factories import RecommendationFactory
 
 DATABASE_URI = os.getenv(
     "DATABASE_URI", "postgresql+psycopg://postgres:postgres@localhost:5432/testdb"
@@ -24,6 +24,7 @@ BASE_URL = "/recommendations"
 class TestRecommendationService(TestCase):
     """REST API Server Tests"""
 
+    # pylint: disable=duplicate-code
     @classmethod
     def setUpClass(cls):
         """Run once before all tests"""
@@ -73,7 +74,6 @@ class TestRecommendationService(TestCase):
         resp = self.client.get("/")
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
 
-    # Todo: Add your test cases here...
     def test_create_recommendation(self):
         """It should Create a new Recommendation"""
         test_recommendation = RecommendationFactory()

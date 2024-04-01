@@ -50,6 +50,13 @@ class TestCaseBase(TestCase):
         """This runs after each test"""
         db.session.remove()
 
+
+######################################################################
+#  P E T   M O D E L   T E S T   C A S E S
+######################################################################
+class TestRecommendationModel(TestCaseBase):
+    """Recommendation Model CRUD Tests"""
+
     ######################################################################
     #  T E S T   C A S E S
     ######################################################################

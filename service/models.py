@@ -49,8 +49,6 @@ class Recommendation(db.Model):
     ##################################################
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(63))
-
-    # Todo: Place the rest of your schema here...
     recommendation_type = db.Column(
         db.Enum(EnumRecommendationType),
         nullable=False,
