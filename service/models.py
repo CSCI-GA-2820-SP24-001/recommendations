@@ -152,7 +152,7 @@ class Recommendation(db.Model):
     def find(cls, by_id):
         """Finds a Recommendation by its ID"""
         logger.info("Processing lookup for id %s ...", by_id)
-        return cls.query.get(by_id)
+        return cls.query.session.get(cls, by_id)
 
     @classmethod
     def find_by_name(cls, name):
