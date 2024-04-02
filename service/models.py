@@ -144,24 +144,59 @@ class Recommendation(db.Model):
 
     @classmethod
     def all(cls):
-        """Returns all of the Recommendation in the database"""
-        logger.info("Processing all Recommendation")
-
+        """Returns all of the Recommendations in the database"""
+        logger.info("Processing all Recommendations")
         return cls.query.all()
 
     @classmethod
     def find(cls, by_id):
-        """Finds a Recommendation by it's ID"""
-
+        """Finds a Recommendation by its ID"""
         logger.info("Processing lookup for id %s ...", by_id)
-        return cls.query.session.get(cls, by_id)
+        return cls.query.get(by_id)
 
     @classmethod
     def find_by_name(cls, name):
-        """Returns all Recommendation with the given name
+        """Returns all Recommendations with the given name
 
         Args:
-            name (string): the name of the Recommendation you want to match
+            name (string): the name of the Recommendations you want to match
         """
         logger.info("Processing name query for %s ...", name)
         return cls.query.filter(cls.name == name)
+
+    @classmethod
+    def find_by_type(cls, recommendation_type):
+        """Returns all Recommendations with the given recommendation type
+
+        Args:
+            recommendation_type (string): the recommendation type of the Recommendations you want to match
+        """
+        logger.info(
+            "Processing recommendation type query for %s ...", recommendation_type
+        )
+        return cls.query.filter(
+            cls.recommendation_type == EnumRecommendationType[recommendation_type]
+        )
+
+    @classmethod
+    def find_by_recommendation_name(cls, recommendation_name):
+        """Returns all Recommendations with the given recommendation name
+
+        Args:
+            recommendation_name (string): the recommendation name of the Recommendations you want to match
+        """
+        logger.info(
+            "Processing recommendation name query for %s ...", recommendation_name
+        )
+        return cls.query.filter(cls.recommendation_name == recommendation_name)
+
+    @classmethod
+    def find_by_recommendation_id(cls, recommendation_id):
+        """Returns all Recommendations with the given recommendation ID
+
+        Args:
+            recommendation_id (int): the recommendation ID of the Recommendations you want to match
+        """
+        logger.info("Processing recommendation ID query for %s ...", recommendation_id)
+
+        return cls.query.filter(cls.recommendation_id == recommendation_id)

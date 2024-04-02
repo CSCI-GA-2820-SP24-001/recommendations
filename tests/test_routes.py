@@ -211,10 +211,57 @@ class TestRecommendationService(TestCase):
         data = response.get_json()
         self.assertEqual(len(data), 5)
 
+    def test_get_recommendations_by_name(self):
+        """It should filter recommendations by name"""
+        # Create recommendations to filter
+        recommendation_1 = RecommendationFactory(name="Product A")
+        recommendation_2 = RecommendationFactory(name="Product B")
+        self.client.post(BASE_URL, json=recommendation_1.serialize())
+        self.client.post(BASE_URL, json=recommendation_2.serialize())
+
+        # Filter recommendations by name
+        response = self.client.get(f"{BASE_URL}?name=Product A")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.get_json()
+        self.assertEqual(len(data), 1)
+        self.assertEqual(data[0]["name"], "Product A")
+
+    def test_get_recommendations_by_recommendation_name(self):
+        """It should filter recommendations by recommendation name"""
+        # Create recommendations to filter
+        recommendation_1 = RecommendationFactory(recommendation_name="RecA")
+        recommendation_2 = RecommendationFactory(recommendation_name="RecB")
+        self.client.post(BASE_URL, json=recommendation_1.serialize())
+        self.client.post(BASE_URL, json=recommendation_2.serialize())
+
+        # Filter recommendations by recommendation name
+        response = self.client.get(f"{BASE_URL}?recommendationName=RecA")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.get_json()
+        self.assertEqual(len(data), 1)
+        self.assertEqual(data[0]["recommendation_name"], "RecA")
+
+    def test_get_recommendations_by_id(self):
+        """It should filter recommendations by recommendation ID"""
+        # Create recommendations to filter
+        recommendation_1 = RecommendationFactory(recommendation_id=1)
+        recommendation_2 = RecommendationFactory(recommendation_id=2)
+        self.client.post(BASE_URL, json=recommendation_1.serialize())
+        self.client.post(BASE_URL, json=recommendation_2.serialize())
+
+        # Filter recommendations by recommendation ID
+        response = self.client.get(f"{BASE_URL}?recommendationID=1")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.get_json()
+        self.assertEqual(len(data), 1)
+        self.assertEqual(data[0]["recommendation_id"], 1)
+
 
 ######################################################################
 #  T E S T   S A D   P A T H S
 ######################################################################
+
+
 class TestSadPaths(TestCase):
     """Test REST Exception Handling"""
 
