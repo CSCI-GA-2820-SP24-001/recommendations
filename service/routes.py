@@ -215,9 +215,11 @@ def list_recommendations():
     elif recommendation_type:
         recommendations = Recommendation.find_by_type(recommendation_type)
     elif recommendation_name:
-        recommendations = Recommendation.find_by_recommendation_name(recommendation_name)
+        recommendations = Recommendation.find_by_recommendation_name(
+            recommendation_name
+        )
     elif recommendation_id:
-        recommendation_id = int(recommendation_id) 
+        recommendation_id = int(recommendation_id)
         recommendations = Recommendation.find_by_recommendation_id(recommendation_id)
     else:
         recommendations = Recommendation.all()

@@ -171,8 +171,12 @@ class Recommendation(db.Model):
         Args:
             recommendation_type (string): the recommendation type of the Recommendations you want to match
         """
-        logger.info("Processing recommendation type query for %s ...", recommendation_type)
-        return cls.query.filter(cls.recommendation_type == EnumRecommendationType[recommendation_type])
+        logger.info(
+            "Processing recommendation type query for %s ...", recommendation_type
+        )
+        return cls.query.filter(
+            cls.recommendation_type == EnumRecommendationType[recommendation_type]
+        )
 
     @classmethod
     def find_by_recommendation_name(cls, recommendation_name):
@@ -181,7 +185,9 @@ class Recommendation(db.Model):
         Args:
             recommendation_name (string): the recommendation name of the Recommendations you want to match
         """
-        logger.info("Processing recommendation name query for %s ...", recommendation_name)
+        logger.info(
+            "Processing recommendation name query for %s ...", recommendation_name
+        )
         return cls.query.filter(cls.recommendation_name == recommendation_name)
 
     @classmethod
@@ -192,4 +198,5 @@ class Recommendation(db.Model):
             recommendation_id (int): the recommendation ID of the Recommendations you want to match
         """
         logger.info("Processing recommendation ID query for %s ...", recommendation_id)
+
         return cls.query.filter(cls.recommendation_id == recommendation_id)

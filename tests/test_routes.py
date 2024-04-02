@@ -224,7 +224,7 @@ class TestRecommendationService(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         data = response.get_json()
         self.assertEqual(len(data), 1)
-        self.assertEqual(data[0]['name'], "Product A")
+        self.assertEqual(data[0]["name"], "Product A")
 
     def test_get_recommendations_by_recommendation_name(self):
         """It should filter recommendations by recommendation name"""
@@ -239,7 +239,7 @@ class TestRecommendationService(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         data = response.get_json()
         self.assertEqual(len(data), 1)
-        self.assertEqual(data[0]['recommendation_name'], "RecA")
+        self.assertEqual(data[0]["recommendation_name"], "RecA")
 
     def test_get_recommendations_by_id(self):
         """It should filter recommendations by recommendation ID"""
@@ -254,11 +254,14 @@ class TestRecommendationService(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         data = response.get_json()
         self.assertEqual(len(data), 1)
-        self.assertEqual(data[0]['recommendation_id'], 1)
+        self.assertEqual(data[0]["recommendation_id"], 1)
+
 
 ######################################################################
 #  T E S T   S A D   P A T H S
 ######################################################################
+
+
 class TestSadPaths(TestCase):
     """Test REST Exception Handling"""
 
