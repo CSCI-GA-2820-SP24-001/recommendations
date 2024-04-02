@@ -205,12 +205,20 @@ def list_recommendations():
     recommendations = []
 
     # See if any query filters were passed in
-    category = request.args.get("category")
     name = request.args.get("name")
-    if category:
-        recommendations = Recommendation.find_by_category(category)
-    elif name:
+    recommendation_type = request.args.get("recommendationType")
+    recommendation_name = request.args.get("recommendationName")
+    recommendation_id = request.args.get("recommendationID")
+
+    if name:
         recommendations = Recommendation.find_by_name(name)
+    elif recommendation_type:
+        recommendations = Recommendation.find_by_type(recommendation_type)
+    elif recommendation_name:
+        recommendations = Recommendation.find_by_recommendation_name(recommendation_name)
+    elif recommendation_id:
+        recommendation_id = int(recommendation_id) 
+        recommendations = Recommendation.find_by_recommendation_id(recommendation_id)
     else:
         recommendations = Recommendation.all()
 
