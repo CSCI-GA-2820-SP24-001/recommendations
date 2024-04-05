@@ -228,6 +228,14 @@ def list_recommendations():
     app.logger.info("Returning %d recommendations", len(results))
     return jsonify(results), status.HTTP_200_OK
 
+######################################################################
+# GET HEALTH CHECK
+######################################################################
+@app.route("/health")
+def health():
+    """Health Status"""
+    return {"status": "OK"}, status.HTTP_200_OK
+
 
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S

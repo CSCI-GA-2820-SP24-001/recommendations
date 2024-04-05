@@ -256,7 +256,13 @@ class TestRecommendationService(TestCase):
         self.assertEqual(len(data), 1)
         self.assertEqual(data[0]["recommendation_id"], 1)
 
-
+    def test_health(self):
+        """It should be healthy"""
+        response = self.client.get("/health")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.get_json()
+        self.assertEqual(data["status"], "OK")
+        
 ######################################################################
 #  T E S T   S A D   P A T H S
 ######################################################################
