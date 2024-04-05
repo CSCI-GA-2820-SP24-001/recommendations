@@ -262,12 +262,11 @@ class TestRecommendationService(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         data = response.get_json()
         self.assertEqual(data["status"], "OK")
-        
+
+
 ######################################################################
 #  T E S T   S A D   P A T H S
 ######################################################################
-
-
 class TestSadPaths(TestCase):
     """Test REST Exception Handling"""
 
