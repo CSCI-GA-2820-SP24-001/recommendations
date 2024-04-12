@@ -48,7 +48,7 @@ jobs:
       - name: Run the service locally
         run: |
           echo "\n*** STARTING APPLICATION ***\n"
-          gunicorn --log-level=info --bind=0.0.0.0:8080 wsgi:app &
+          gunicorn --log-level=info --bind=0.0.0.0:8000 wsgi:app &
           echo "Waiting for service to stabilize..."
           sleep 5
           echo "Checking service /health..."
