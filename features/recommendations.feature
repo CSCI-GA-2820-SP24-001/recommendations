@@ -5,12 +5,12 @@ Feature: The recommendation service back-end
 
 # Background:
 #     Given the following recommendations
-#         | id | user_id | product_id | bought_in_last_30_days | rating | recommendation_type |
-#         | 1  | 11      | 15         | True                   | 2      | UPSELL              |
-#         | 2  | 21      | 10         | True                   | 3      | CROSS_SELL          |
-#         | 3  | 1       | 28         | False                  | 4      | TRENDING            |
-#         | 4  | 5       | 31         | False                  | 0      | UPSELL              |
-#         | 5  | 9       | 16         | False                  | 1      | TRENDING            |
+#         | id | name       | product_id | recommendation_name | recommendation_id  | recommendation_type |
+#         | 1  | cake       | 15         | cookie              | 123                | CROSS_SELL          |
+#         | 2  | Lemon      | 10         | Orange              | 321                | CROSS_SELL          |
+#         | 3  | pineapple  | 28         | Mango               | 456                | CROSS_SELL          |
+#         | 4  | Water      | 31         | Sparkling Water     | 654                | UPSELL              |
+#         | 5  | sprite     | 16         | Coke                | 111                | CROSS_SELL          | 
 
 Background:
     Given the server is started
