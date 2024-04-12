@@ -9,7 +9,7 @@ Attributes:
 -----------
 name (string) - the name of the product
 recommendation_type (enum) - the recommendation type (cross-sell, up-sell...etc)
-recommendation (string) - recommendation product
+
 
 recommendation_name (string) - recommendation name
 recommendation_id (int) - recommendation id
