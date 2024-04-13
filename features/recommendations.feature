@@ -19,3 +19,21 @@ Scenario: The server is running
     When I visit the "home page"
     Then I should see "Recommendation Demo REST API Service" in the title
     And  I should not see "404 Not Found"
+
+Scenario: Create a Recommendation
+    When I visit the "Home Page"
+    And I set the "name" to "Feeder"
+    And I select the "recommendationType" drop-down to "cross-sell"
+    And I press the "Create" button
+    Then I should see the message "Success"
+    When I copy the "Id" field
+    And I press the "Clear" button
+    Then the "Id" field should be empty
+    And the "name" field should be empty
+    And the "recommendationType" field should be empty
+    When I paste the "Id" field
+    And I press the "Retrieve" button
+    Then I should see the message "Success"
+    And I should see "Feeder" in the "name" field
+    And I should see "cross-sell" in the "recommendationType" drop-down
+    And I should see "recommendationID" in the "Id" field
