@@ -6,17 +6,20 @@ $(function () {
 
     // Updates the form with data from the response
     function update_form_data(res) {
+        $("#product_id").val(res.id);
+        $("#product_name").val(res.name);
         $("#recommendation_id").val(res.recommendation_id);
-        $("#recommendation_name").val(res.name);
-        $("#recommendation_recommendation_name").val(res.recommendation_name);
-        $("#recommendation_recommendation_type").val(res.recommendation_type);
+        $("#recommendation_name").val(res.recommendation_name);
+        $("#recommendation_type").val(res.recommendation_type);
     }
 
     /// Clears all form fields
     function clear_form_data() {
+        $("#product_id").val("");
+        $("#product_name").val("");
+        $("#recommendation_id").val("");
         $("#recommendation_name").val("");
-        $("#recommendation_recommendation_name").val("");
-        $("#recommendation_recommendation_type").val("");
+        $("#recommendation_type").val("");
     }
 
     // Updates the flash message area
@@ -31,13 +34,15 @@ $(function () {
 
     $("#create-btn").click(function () {
 
-        let name = $("#recommendation_name").val();
-        let recommendation_name = $("#recommendation_recommendation_name").val();
-        let recommendation_type = $("#recommendation_recommendation_type").val();
+        let name = $("#product_name").val();
+        let recommendation_name = $("#recommendation_name").val();
+        let recommendation_id = $("#recommendation_id").val();
+        let recommendation_type = $("#recommendation_type").val();
 
         let data = {
             "name": name,
             "recommendation_name": recommendation_name,
+            "recommendation_id": recommendation_id,
             "recommendation_type": recommendation_type
         };
 
@@ -67,14 +72,16 @@ $(function () {
 
     $("#update-btn").click(function () {
 
+        // let product_id = $("#product_id").val();
+        let name = $("#name").val();
+        let recommendation_name = $("#recommendation_name").val();
         let recommendation_id = $("#recommendation_id").val();
-        let name = $("#recommendation_name").val();
-        let recommendation_name = $("#recommendation_recommendation_name").val();
-        let recommendation_type = $("#recommendation_recommendation_type").val();
+        let recommendation_type = $("#recommendation_type").val();
 
         let data = {
             "name": name,
             "recommendation_name": recommendation_name,
+            "recommendation_id": recommendation_id,
             "recommendation_type": recommendation_type
         };
 
@@ -104,13 +111,13 @@ $(function () {
 
     $("#retrieve-btn").click(function () {
 
-        let recommendation_id = $("#recommendation_id").val();
+        let product_id = $("#product_id").val();
 
         $("#flash_message").empty();
 
         let ajax = $.ajax({
             type: "GET",
-            url: `/recommendations/${recommendation_id}`,
+            url: `/recommendations/${product_id}`,
             contentType: "application/json",
             data: ''
         })
@@ -160,7 +167,7 @@ $(function () {
     // ****************************************
 
     $("#clear-btn").click(function () {
-        $("#recommendation_id").val("");
+        $("#product_id").val("");
         $("#flash_message").empty();
         clear_form_data()
     });
@@ -171,29 +178,29 @@ $(function () {
 
     $("#search-btn").click(function () {
 
-        let name = $("#recommendation_name").val();
-        let recommendation_name = $("#recommendation_recommendation_name").val();
-        let recommendation_type = $("#recommendation_recommendation_type").val();
+        let name = $("#product_name").val();
+        let recommendation_name = $("#recommendation_name").val();
+        let recommendation_type = $("#recommendation_type").val();
 
         let queryString = ""
 
         if (name) {
             queryString += 'name=' + name
         }
-        if (recommendation_name) {
-            if (queryString.length > 0) {
-                queryString += '&recommendation_name=' + recommendation_name
-            } else {
-                queryString += 'recommendation_name=' + recommendation_name
-            }
-        }
-        if (recommendation_type) {
-            if (queryString.length > 0) {
-                queryString += '&recommendation_type=' + recommendation_type
-            } else {
-                queryString += 'recommendation_type=' + recommendation_type
-            }
-        }
+        // if (recommendation_name) {
+        //     if (queryString.length > 0) {
+        //         queryString += '&recommendation_name=' + recommendation_name
+        //     } else {
+        //         queryString += 'recommendation_name=' + recommendation_name
+        //     }
+        // }
+        // if (recommendation_type) {
+        //     if (queryString.length > 0) {
+        //         queryString += '&recommendation_type=' + recommendation_type
+        //     } else {
+        //         queryString += 'recommendation_type=' + recommendation_type
+        //     }
+        // }
 
         $("#flash_message").empty();
 

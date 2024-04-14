@@ -210,9 +210,9 @@ def list_recommendations():
 
     # See if any query filters were passed in
     name = request.args.get("name")
-    recommendation_type = request.args.get("recommendationType")
-    recommendation_name = request.args.get("recommendationName")
-    recommendation_id = request.args.get("recommendationID")
+    recommendation_type = request.args.get("recommendation_type")
+    recommendation_name = request.args.get("recommendation_name")
+    recommendation_id = request.args.get("recommendation_id")
 
     if name:
         recommendations = Recommendation.find_by_name(name)
