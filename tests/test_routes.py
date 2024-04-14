@@ -235,7 +235,7 @@ class TestRecommendationService(TestCase):
         self.client.post(BASE_URL, json=recommendation_2.serialize())
 
         # Filter recommendations by recommendation name
-        response = self.client.get(f"{BASE_URL}?recommendationName=RecA")
+        response = self.client.get(f"{BASE_URL}?recommendation_name=RecA")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         data = response.get_json()
         self.assertEqual(len(data), 1)
@@ -250,7 +250,7 @@ class TestRecommendationService(TestCase):
         self.client.post(BASE_URL, json=recommendation_2.serialize())
 
         # Filter recommendations by recommendation ID
-        response = self.client.get(f"{BASE_URL}?recommendationID=1")
+        response = self.client.get(f"{BASE_URL}?recommendation_id=1")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         data = response.get_json()
         self.assertEqual(len(data), 1)
