@@ -206,29 +206,32 @@ def list_recommendations():
     """Returns all of the recommendations"""
     app.logger.info("Request for recommendations list")
 
-    recommendations = Recommendation.all()
+    recommendations = []
 
     # See if any query filters were passed in
     name = request.args.get("name")
-    recommendation_type = request.args.get("recommendation_type")
-    recommendation_name = request.args.get("recommendation_name")
-    recommendation_id = request.args.get("recommendation_id")
+    recommendation_type = request.args.get("recommendationType")
+    recommendation_name = request.args.get("recommendationName")
+    recommendation_id = request.args.get("recommendationID")
 
     if name:
-        recommendations = recommendations.filter(Recommendation.name == name)
-    if recommendation_name:
-        recommendations = recommendations.filter(Recommendation.recommendation_name == recommendation_name)
-    if recommendation_id:
-        try:
-            recommendation_id = int(recommendation_id)
-            recommendations = recommendations.filter(Recommendation.recommendation_id == recommendation_id)
-        except ValueError:
-            # Handle the case where recommendation_id is not a valid integer
-            pass
+        recommendations = Recommendation.find_by_name(name)
+    elif recommendation_type:
+        recommendations = Recommendation.find_by_type(recommendation_type)
+    elif recommendation_name:
+        recommendations = Recommendation.find_by_recommendation_name(
+            recommendation_name
+        )
+    elif recommendation_id:
+        recommendation_id = int(recommendation_id)
+        recommendations = Recommendation.find_by_recommendation_id(recommendation_id)
+    else:
+        recommendations = Recommendation.all()
 
     results = [recommendation.serialize() for recommendation in recommendations]
     app.logger.info("Returning %d recommendations", len(results))
     return jsonify(results), status.HTTP_200_OK
+
 
 ######################################################################
 # GET HEALTH CHECK
