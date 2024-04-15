@@ -58,7 +58,7 @@ Scenario: Search for a recommendation by name
 
 Scenario: Search for a recommendation by recommendation type
     When I visit the "Home Page"
-    And I set the "recommendation_type" to "CROSS_SELL"
+    And I select "CROSS_SELL" in the "recommendation_type" dropdown
     And I press the "Search" button
     Then I should see "cake" in the results
     And I should see "Lemon" in the results

@@ -192,11 +192,10 @@ class Recommendation(db.Model):
 
     @classmethod
     def find_by_recommendation_id(cls, recommendation_id):
-        """Returns all Recommendations with the given recommendation ID
+        """Returns the Recommendation with the given recommendation ID
 
         Args:
-            recommendation_id (int): the recommendation ID of the Recommendations you want to match
+            recommendation_id (int): the recommendation ID of the Recommendation you want to match
         """
         logger.info("Processing recommendation ID query for %s ...", recommendation_id)
-
-        return cls.query.filter(cls.recommendation_id == recommendation_id)
+        return cls.query.filter(cls.recommendation_id == recommendation_id).first()
