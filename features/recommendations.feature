@@ -57,32 +57,35 @@ Scenario: Search for a recommendation by name
     And I should not see "Water" in the results
     And I should not see "sprite" in the results
 
-# Scenario: Search for a recommendation by recommendation type
-#     When I visit the "Home Page"
-#     And I select "CROSS_SELL" in the "recommendation_type" dropdown
-#     And I press the "Search" button
-#     Then I should see "cake" in the results
-#     And I should see "Lemon" in the results
-#     And I should see "pineapple" in the results
-#     And I should not see "Water" in the results
-#     And I should see "sprite" in the results
+Scenario: Search for a recommendation by recommendation type
+    When I visit the "Home Page"
+    And I press the "Clear" button
+    And I select "CROSS_SELL" in the "recommendation_type" dropdown
+    And I press the "Search" button
+    Then I should see "cake" in the results
+    And I should see "Lemon" in the results
+    And I should see "pineapple" in the results
+    And I should not see "Water" in the results
+    And I should see "sprite" in the results
 
 # Scenario: Search for a recommendation by recommendation name
-#     When I visit the "Home Page"
-#     And I set the "recommendation_name" to "cookie"
-#     And I press the "Search" button
-#     Then I should see "cake" in the results
-#     And I should not see "Lemon" in the results
-#     And I should not see "pineapple" in the results
-#     And I should not see "Water" in the results
-#     And I should not see "sprite" in the results
+    When I visit the "Home Page"
+    And I press the "Clear" button
+    And I set the "recommendation_name" to "cookie"
+    And I press the "Search" button
+    Then I should see "cake" in the results
+    And I should not see "Lemon" in the results
+    And I should not see "pineapple" in the results
+    And I should not see "Water" in the results
+    And I should not see "sprite" in the results
 
 # Scenario: Search for a recommendation by recommendation ID
-#     When I visit the "Home Page"
-#     And I set the "recommendation_id" to "1"
-#     And I press the "Search" button
-#     Then I should see "cake" in the results
-#     And I should not see "Lemon" in the results
-#     And I should not see "pineapple" in the results
-#     And I should not see "Water" in the results
-#     And I should not see "sprite" in the results
+    When I visit the "Home Page"
+    And I press the "Clear" button
+    And I set the "recommendation_id" to "123"
+    And I press the "Search" button
+    Then I should see "cake" in the results
+    And I should not see "Lemon" in the results
+    And I should not see "pineapple" in the results
+    And I should not see "Water" in the results
+    And I should not see "sprite" in the results
