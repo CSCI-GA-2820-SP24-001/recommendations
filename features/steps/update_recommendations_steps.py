@@ -51,6 +51,8 @@ def step_impl(context):
             "recommendation_name": row["recommendation_name"],
             "recommendation_id": row["recommendation_id"],
             "recommendation_type": row["recommendation_type"],
+            "recommendation_in_stock": row["recommendation_in_stock"]
+            in ["True", "true", "1"],
         }
         context.resp = requests.post(rest_endpoint, json=payload)
         assert context.resp.status_code == HTTP_201_CREATED
