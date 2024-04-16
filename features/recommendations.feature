@@ -90,6 +90,7 @@ Scenario: Search for a recommendation by recommendation type
     And I should not see "Water" in the results
     And I should not see "sprite" in the results
 
+# Scenario: Update a recommendation with product ID
 Scenario: Update a recommendation
     When I visit the "Home Page"
     And I set the "product_name" to "cake"
@@ -100,9 +101,9 @@ Scenario: Update a recommendation
     When I set the "product_name" to "treat"
     And I press the "Update" button
     Then I should see the message "Success"
-    When I copy the "recommendation_id" field
+    When I copy the "product_id" field
     And I press the "Clear" button
-    And I paste the "recommendation_id" field
+    And I paste the "product_id" field
     And I press the "Retrieve" button
     Then I should see the message "Success"
     And I should see "treat" in the "product_name" field
