@@ -250,13 +250,15 @@ def restock_recommendations(product_id):
     # Attempt to find the Pet and abort if not found
     recommendation = Recommendation.find(product_id)
     if not recommendation:
-        abort(status.HTTP_404_NOT_FOUND, f"Pet with id '{product_id}' was not found.")
+        abort(
+            status.HTTP_404_NOT_FOUND, f"Product with id '{product_id}' was not found."
+        )
 
     # you can only restock when they are not in stock
     if recommendation.recommendation_in_stock:
         abort(
             status.HTTP_409_CONFLICT,
-            f"Recommendation with id '{product_id}' is already in stock.",
+            f"Recommendation for id '{product_id}' is already in stock.",
         )
 
     # At this point you would execute code to purchase the pet
