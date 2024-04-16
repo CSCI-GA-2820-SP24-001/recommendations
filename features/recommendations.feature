@@ -38,6 +38,7 @@ Scenario: Create a Recommendation
 
 Scenario: List all products
     When I visit the "Home Page"
+    And I press the "Clear" button
     And I press the "Search" button
     Then I should see the message "Success"
     And I should see "cake" in the results
