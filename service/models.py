@@ -9,8 +9,7 @@ Attributes:
 -----------
 name (string) - the name of the product
 recommendation_type (enum) - the recommendation type (cross-sell, up-sell...etc)
-
-
+recommendation_in_stock (boolean) - True for the recommendation is in stock
 recommendation_name (string) - recommendation name
 recommendation_id (int) - recommendation id
 """
@@ -56,6 +55,7 @@ class Recommendation(db.Model):
     )
     recommendation_name = db.Column(db.String(63))
     recommendation_id = db.Column(db.Integer, primary_key=False)
+    recommendation_in_stock = db.Column(db.Boolean(), nullable=False, default=False)
 
     def __repr__(self):
         return f"<Recommendation {self.name} id=[{self.id}]>"
@@ -106,6 +106,7 @@ class Recommendation(db.Model):
         return {
             "id": self.id,
             "name": self.name,
+            "recommendation_in_stock": self.recommendation_in_stock,
             "recommendation_type": self.recommendation_type.name,
             "recommendation_name": self.recommendation_name,
             "recommendation_id": self.recommendation_id,
@@ -120,6 +121,15 @@ class Recommendation(db.Model):
         """
         try:
             self.name = data["name"]
+
+            if isinstance(data["recommendation_in_stock"], bool):
+                self.recommendation_in_stock = data["recommendation_in_stock"]
+            else:
+                raise DataValidationError(
+                    "Invalid type for boolean [recommendation_in_stock]: "
+                    + str(type(data["recommendation_in_stock"]))
+                )
+
             self.recommendation_type = getattr(
                 EnumRecommendationType, data["recommendation_type"]
             )  # create enum from string
@@ -177,6 +187,23 @@ class Recommendation(db.Model):
         return cls.query.filter(
             cls.recommendation_type == EnumRecommendationType[recommendation_type]
         )
+
+    @classmethod
+    def find_by_in_stock(cls, recommendation_in_stock: bool = True) -> list:
+        """Returns all Recommendations by their availability
+
+        :param recommendation_in_stock: True for pets that are recommendation_in_stock
+        :type recommendation_in_stock: str
+
+        :return: a collection of Recommendations that are recommendation_in_stock
+        :rtype: list
+
+        """
+        logger.info(
+            "Processing recommendation_in_stock query for %s ...",
+            recommendation_in_stock,
+        )
+        return cls.query.filter(cls.recommendation_in_stock == recommendation_in_stock)
 
     @classmethod
     def find_by_recommendation_name(cls, recommendation_name):

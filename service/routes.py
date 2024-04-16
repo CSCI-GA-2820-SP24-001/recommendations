@@ -64,7 +64,7 @@ def create_recommendations():
     recommendation.create()
     message = recommendation.serialize()
     location_url = url_for(
-        "get_recommendations", recommendation_id=recommendation.id, _external=True
+        "get_recommendations", product_id=recommendation.id, _external=True
     )
 
     app.logger.info("Recommendation with ID: %d created.", recommendation.id)
@@ -74,20 +74,20 @@ def create_recommendations():
 ######################################################################
 # READ A Recommendation
 ######################################################################
-@app.route("/recommendations/<int:recommendation_id>", methods=["GET"])
-def get_recommendations(recommendation_id):
+@app.route("/recommendations/<int:product_id>", methods=["GET"])
+def get_recommendations(product_id):
     """
     Retrieve a single Recommendation
 
     This endpoint will return a Recommendation based on it's id
     """
-    app.logger.info("Request for recommendation with id: %s", recommendation_id)
+    app.logger.info("Request for recommendation with id: %s", product_id)
 
-    recommendation = Recommendation.find(recommendation_id)
+    recommendation = Recommendation.find(product_id)
     if not recommendation:
         error(
             status.HTTP_404_NOT_FOUND,
-            f"Recommendation with id '{recommendation_id}' was not found.",
+            f"Recommendation with id '{product_id}' was not found.",
         )
 
     app.logger.info("Returning recommendation: %s", recommendation.name)
@@ -97,25 +97,25 @@ def get_recommendations(recommendation_id):
 ######################################################################
 # UPDATE AN EXISTING RECOMMENDATION
 ######################################################################
-@app.route("/recommendations/<int:recommendation_id>", methods=["PUT"])
-def update_recommendations(recommendation_id):
+@app.route("/recommendations/<int:product_id>", methods=["PUT"])
+def update_recommendations(product_id):
     """
     Update a Recommendation
 
     This endpoint will update a Recommendation based the body that is posted
     """
-    app.logger.info("Request to update recommendations with id: %d", recommendation_id)
+    app.logger.info("Request to update recommendations with id: %d", product_id)
     check_content_type("application/json")
 
-    recommendations = Recommendation.find(recommendation_id)
+    recommendations = Recommendation.find(product_id)
     if not recommendations:
         error(
             status.HTTP_404_NOT_FOUND,
-            f"Recommendation with id: '{recommendation_id}' was not found.",
+            f"Recommendation with id: '{product_id}' was not found.",
         )
 
     recommendations.deserialize(request.get_json())
-    recommendations.id = recommendation_id
+    recommendations.id = product_id
     recommendations.update()
 
     app.logger.info("Recommendation with ID: %d updated.", recommendations.id)
@@ -210,12 +210,18 @@ def list_recommendations():
 
     # See if any query filters were passed in
     name = request.args.get("name")
-    recommendation_type = request.args.get("recommendationType")
-    recommendation_name = request.args.get("recommendationName")
-    recommendation_id = request.args.get("recommendationID")
+    in_stock = request.args.get("recommendation_in_stock")
+    recommendation_type = request.args.get("recommendation_type")
+    recommendation_name = request.args.get("recommendation_name")
+    recommendation_id = request.args.get("recommendation_id")
 
     if name:
         recommendations = Recommendation.find_by_name(name)
+    elif in_stock:
+        app.logger.info("Find by in_stock: %s", in_stock)
+        # create bool from string
+        available_value = in_stock.lower() in ["true", "yes", "1"]
+        recommendations = Recommendation.find_by_in_stock(available_value)
     elif recommendation_type:
         recommendations = Recommendation.find_by_type(recommendation_type)
     elif recommendation_name:
@@ -231,6 +237,38 @@ def list_recommendations():
     results = [recommendation.serialize() for recommendation in recommendations]
     app.logger.info("Returning %d recommendations", len(results))
     return jsonify(results), status.HTTP_200_OK
+
+
+######################################################################
+# RESTOCK A RECOMMENDATION
+######################################################################
+@app.route("/recommendations/<int:product_id>/restock", methods=["PUT"])
+def restock_recommendations(product_id):
+    """Restock a recommendation to make it in stock"""
+    app.logger.info("Request to restock recommendation with id: %d", product_id)
+
+    # Attempt to find the Pet and abort if not found
+    recommendation = Recommendation.find(product_id)
+    if not recommendation:
+        abort(
+            status.HTTP_404_NOT_FOUND, f"Product with id '{product_id}' was not found."
+        )
+
+    # you can only restock when they are not in stock
+    if recommendation.recommendation_in_stock:
+        abort(
+            status.HTTP_409_CONFLICT,
+            f"Recommendation for id '{product_id}' is already in stock.",
+        )
+
+    # At this point you would execute code to purchase the pet
+    # For the moment, we will just set them to unavailable
+
+    recommendation.recommendation_in_stock = True
+    recommendation.update()
+
+    app.logger.info("Pet with ID: %d has been purchased.", product_id)
+    return recommendation.serialize(), status.HTTP_200_OK
 
 
 ######################################################################

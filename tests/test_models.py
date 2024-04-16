@@ -64,6 +64,7 @@ class TestRecommendationModel(TestCaseBase):
         """It should Create a recommendation and assert that it exists"""
         recommendation = Recommendation(
             name="Test_product_name",
+            recommendation_in_stock=True,
             recommendation_type=EnumRecommendationType.UNKNOWN,
             recommendation_name="Test_recommendation_name",
             recommendation_id=0,
@@ -75,6 +76,7 @@ class TestRecommendationModel(TestCaseBase):
         self.assertTrue(recommendation is not None)
         self.assertEqual(recommendation.id, None)
         self.assertEqual(recommendation.name, "Test_product_name")
+        self.assertEqual(recommendation.recommendation_in_stock, True)
         self.assertEqual(
             recommendation.recommendation_type, EnumRecommendationType.UNKNOWN
         )
@@ -185,6 +187,10 @@ class TestRecommendationModel(TestCaseBase):
         self.assertEqual(data["id"], recommendation.id)
         self.assertIn("name", data)
         self.assertEqual(data["name"], recommendation.name)
+        self.assertIn("recommendation_in_stock", data)
+        self.assertEqual(
+            data["recommendation_in_stock"], recommendation.recommendation_in_stock
+        )
         self.assertIn("recommendation_type", data)
         self.assertEqual(
             data["recommendation_type"], recommendation.recommendation_type.name
@@ -205,6 +211,9 @@ class TestRecommendationModel(TestCaseBase):
         self.assertEqual(recommendation.id, None)
         self.assertEqual(recommendation.name, data["name"])
         self.assertEqual(
+            recommendation.recommendation_in_stock, data["recommendation_in_stock"]
+        )
+        self.assertEqual(
             data["recommendation_type"], recommendation.recommendation_type.name
         )
         self.assertEqual(
@@ -217,7 +226,7 @@ class TestRecommendationModel(TestCaseBase):
         data = {
             "id": 1,
             "name": "test_deserialize_name",
-            "recommendation_name": "test_deserialize_recommendationName",
+            "recommendation_name": "test_deserialize_recommendation_name",
         }
         recommendation = Recommendation()
         self.assertRaises(DataValidationError, recommendation.deserialize, data)
@@ -228,13 +237,13 @@ class TestRecommendationModel(TestCaseBase):
         recommendation = Recommendation()
         self.assertRaises(DataValidationError, recommendation.deserialize, data)
 
-    # def test_deserialize_bad_available(self):
-    #     """It should not deserialize a bad available attribute"""
-    #     test_recommendation = RecommendationFactory()
-    #     data = test_recommendation.serialize()
-    #     data["available"] = "true"
-    #     recommendation = Recommendation()
-    #     self.assertRaises(DataValidationError, recommendation.deserialize, data)
+    def test_deserialize_bad_in_stock(self):
+        """It should not deserialize a bad recommendation_in_stock attribute"""
+        test_recommendation = RecommendationFactory()
+        data = test_recommendation.serialize()
+        data["recommendation_in_stock"] = "true"
+        recommendation = Recommendation()
+        self.assertRaises(DataValidationError, recommendation.deserialize, data)
 
     # def test_deserialize_bad_EnumRecommendationType(self):
     #     """It should not deserialize a bad EnumRecommendationType attribute"""
@@ -288,10 +297,31 @@ class TestExceptionHandlers(TestCaseBase):
     #     recommendation = Recommendation()
     #     self.assertRaises(DataValidationError, recommendation.deserialize, data)
 
+    ######################################################################
+    #  Q U E R Y   T E S T   C A S E S
+    ######################################################################
 
-######################################################################
-#  Q U E R Y   T E S T   C A S E S
-######################################################################
+    def test_find_by_in_stock(self):
+        """It should Find Recommendations by recommendation_in_stock"""
+        recommendations = RecommendationFactory.create_batch(10)
+        for recommendation in recommendations:
+            recommendation.create()
+        recommendation_in_stock = recommendations[0].recommendation_in_stock
+        count = len(
+            [
+                recommendation
+                for recommendation in recommendations
+                if recommendation.recommendation_in_stock == recommendation_in_stock
+            ]
+        )
+        found = Recommendation.find_by_in_stock(recommendation_in_stock)
+        self.assertEqual(found.count(), count)
+        for recommendation in found:
+            self.assertEqual(
+                recommendation.recommendation_in_stock, recommendation_in_stock
+            )
+
+
 # class TestModelQueries(TestCaseBase):
 #     """Recommendation Model Query Tests"""
 
@@ -308,7 +338,7 @@ class TestExceptionHandlers(TestCaseBase):
 #         self.assertIsNot(recommendation, None)
 #         self.assertEqual(recommendation.id, recommendations[1].id)
 #         self.assertEqual(recommendation.name, recommendations[1].name)
-#         self.assertEqual(recommendation.available, recommendations[1].available)
+#         self.assertEqual(recommendation.recommendation_in_stock, recommendations[1].recommendation_in_stock)
 #         self.assertEqual(recommendation.gender, recommendations[1].gender)
 #         self.assertEqual(recommendation.birthday, recommendations[1].birthday)
 
@@ -341,12 +371,13 @@ class TestExceptionHandlers(TestCaseBase):
 #         recommendations = RecommendationFactory.create_batch(10)
 #         for recommendation in recommendations:
 #             recommendation.create()
-#         available = recommendations[0].available
-#         count = len([recommendation for recommendation in recommendations if recommendation.available == available])
-#         found = Recommendation.find_by_availability(available)
+#         recommendation_in_stock = recommendations[0].recommendation_in_stock
+#         count = len([recommendation for recommendation in recommendations
+#                       if recommendation.recommendation_in_stock == recommendation_in_stock])
+#         found = Recommendation.find_by_availability(recommendation_in_stock)
 #         self.assertEqual(found.count(), count)
 #         for recommendation in found:
-#             self.assertEqual(recommendation.available, available)
+#             self.assertEqual(recommendation.recommendation_in_stock, recommendation_in_stock)
 
 #     def test_find_by_gender(self):
 #         """It should Find Recommendations by Gender"""
