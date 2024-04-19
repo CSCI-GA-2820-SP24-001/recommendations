@@ -151,13 +151,13 @@ $(function () {
 
     $("#delete-btn").click(function () {
 
-        let recommendation_id = $("#recommendation_id").val();
+        let product_id = $("#product_id").val();
 
         $("#flash_message").empty();
 
         let ajax = $.ajax({
             type: "DELETE",
-            url: `/recommendations/${recommendation_id}`,
+            url: `/recommendations/${product_id}`,
             contentType: "application/json",
             data: '',
         })

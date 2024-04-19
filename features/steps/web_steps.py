@@ -136,6 +136,12 @@ def step_impl(context, name):
     assert name not in element.text
 
 
+@then('I should not see "{name}" field')
+def step_impl(context, name):
+    element = context.driver.find_element(By.ID, "search_results")
+    assert name not in element.text
+
+
 @then('I should see the message "{message}"')
 def step_impl(context, message):
     found = WebDriverWait(context.driver, context.wait_seconds).until(
