@@ -147,3 +147,36 @@ Scenario: Restock a recommendation
     And I should see "keyboard" in the "recommendation_name" field
     And I should see "777" in the "recommendation_id" field
     And I should see "true" in the "recommendation_in_stock" field
+
+#DELETE
+Scenario: Delete a recommendation
+    When I visit the "Home Page"
+    And I press the "Clear" button
+    And I set the "product_name" to "laptop"
+    And I select "CROSS_SELL" in the "recommendation_type" dropdown
+    And I set the "recommendation_name" to "keyboard"
+    And I set the "recommendation_id" to "777"
+    And I press the "Create" button
+    Then I should see the message "Success"
+    When I copy the "product_id" field
+    And I press the "Clear" button
+    Then the "product_id" field should be empty
+    And the "product_name" field should be empty
+    And the "recommendation_type" field should be empty
+    And the "recommendation_name" field should be empty
+    And the "recommendation_id" field should be empty
+    And the "recommendation_in_stock" field should be empty
+    When I paste the "product_id" field
+    And I press the "Retrieve" button
+    Then I should see "laptop" in the "product_name" field
+    And I should see "CROSS_SELL" in the "recommendation_type" field
+    And I should see "keyboard" in the "recommendation_name" field
+    And I should see "777" in the "recommendation_id" field
+    And I should see "false" in the "recommendation_in_stock" field
+    When I press the "Delete" button
+    Then I should not see "laptop" in the "product_name" field
+    And I should not see "CROSS_SELL" in the "recommendation_type" field
+    And I should not see "keyboard" in the "recommendation_name" field
+    And I should not see "777" in the "recommendation_id" field
+    And I should not see "true" in the "recommendation_in_stock" field
+
