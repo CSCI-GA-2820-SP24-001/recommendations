@@ -1,8 +1,8 @@
 apiVersion: tekton.dev/v1
 kind: Pipeline
 metadata:
-  creationTimestamp: '2024-04-16T23:13:26Z'
-  generation: 15
+  creationTimestamp: '2024-04-26T15:50:45Z'
+  generation: 2
   managedFields:
     - apiVersion: tekton.dev/v1
       fieldsType: FieldsV1
@@ -15,18 +15,16 @@ metadata:
           'f:workspaces': {}
       manager: Mozilla
       operation: Update
-      time: '2024-04-26T00:28:13Z'
-  name: cd-pipeline
-  namespace:
-  resourceVersion: '1753988445'
-  uid: 26adb1e7-3368-4a70-9bec-82b0659f0731
+      time: '2024-04-26T15:51:23Z'
+  name: cd-pipeline-recommendation
+  uid: 47d33d92-44af-4b1e-abba-f4f5c2c72d50
 spec:
   params:
     - default: 'https://github.com/CSCI-GA-2820-SP24-001/recommendations'
       description: The URL to the git repo
       name: GIT_REPO
       type: string
-    - default: openshift
+    - default: master
       description: The reference (branch or ref)
       name: GIT_REF
       type: string
@@ -79,84 +77,5 @@ spec:
       workspaces:
         - name: output
           workspace: pipeline-workspace
-  #   - name: pylint
-  #     params:
-  #       - name: image
-  #         value: 'docker.io/python:3.11-slim'
-  #       - name: path
-  #         value: service
-  #       - name: args
-  #         value: []
-  #       - name: requirements_file
-  #         value: requirements.txt
-  #     runAfter:
-  #       - git-clone
-  #     taskRef:
-  #       kind: Task
-  #       name: pylint
-  #     workspaces:
-  #       - name: source
-  #         workspace: pipeline-workspace
-  #   - name: testing
-  #     params:
-  #       - name: PYTEST_ARGS
-  #         value: []
-  #       - name: SECRET_NAME
-  #         value: postgres-creds
-  #       - name: SECRET_KEY
-  #         value: database_uri
-  #     runAfter:
-  #       - git-clone
-  #     taskRef:
-  #       kind: Task
-  #       name: pytest-env
-  #     workspaces:
-  #       - name: source
-  #         workspace: pipeline-workspace
-  #   - name: build
-  #     params:
-  #       - name: IMAGE
-  #         value: $(params.IMAGE_NAME)
-  #       - name: BUILDER_IMAGE
-  #         value: 'registry.redhat.io/rhel8/buildah@sha256:b48f410efa0ff8ab0db6ead420a5d8d866d64af846fece5efb185230d7ecf591'
-  #       - name: STORAGE_DRIVER
-  #         value: vfs
-  #       - name: DOCKERFILE
-  #         value: ./Dockerfile
-  #       - name: CONTEXT
-  #         value: .
-  #       - name: TLSVERIFY
-  #         value: 'true'
-  #       - name: FORMAT
-  #         value: oci
-  #       - name: BUILD_EXTRA_ARGS
-  #         value: ''
-  #       - name: PUSH_EXTRA_ARGS
-  #         value: ''
-  #       - name: SKIP_PUSH
-  #         value: 'false'
-  #     runAfter:
-  #       - pylint
-  #       - testing
-  #     taskRef:
-  #       kind: ClusterTask
-  #       name: buildah
-  #     workspaces:
-  #       - name: source
-  #         workspace: pipeline-workspace
-  #   - name: deploy
-  #     params:
-  #       - name: image_name
-  #         value: $(params.IMAGE_NAME)
-  #       - name: manifest_dir
-  #         value: k8s
-  #     runAfter:
-  #       - build
-  #     taskRef:
-  #       kind: Task
-  #       name: deploy-image
-  #     workspaces:
-  #       - name: source
-  #         workspace: pipeline-workspace
-  # workspaces:
-  #   - name: pipeline-workspace
+  workspaces:
+    - name: pipeline-workspace
