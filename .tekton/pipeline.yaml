@@ -1,8 +1,8 @@
 apiVersion: tekton.dev/v1
 kind: Pipeline
 metadata:
-  creationTimestamp: '2024-04-26T15:50:45Z'
-  generation: 2
+  creationTimestamp: '2024-04-27T20:32:54Z'
+  generation: 1
   managedFields:
     - apiVersion: tekton.dev/v1
       fieldsType: FieldsV1
@@ -15,9 +15,10 @@ metadata:
           'f:workspaces': {}
       manager: Mozilla
       operation: Update
-      time: '2024-04-26T15:51:23Z'
-  name: cd-pipeline-recommendation
-  uid: 47d33d92-44af-4b1e-abba-f4f5c2c72d50
+      time: '2024-04-27T20:32:54Z'
+  name: cd-pipeline-recommendation-from-repo
+  namespace: jason2003120-dev
+  uid: f41edbed-7c59-43f8-9628-080057907d79
 spec:
   params:
     - default: 'https://github.com/CSCI-GA-2820-SP24-001/recommendations'
@@ -76,6 +77,22 @@ spec:
         name: git-clone
       workspaces:
         - name: output
+          workspace: pipeline-workspace
+    - name: testing
+      params:
+        - name: PYTEST_ARGS
+          value: []
+        - name: SECRET_NAME
+          value: postgres-creds
+        - name: SECRET_KEY
+          value: database_uri
+      runAfter:
+        - git-clone
+      taskRef:
+        kind: Task
+        name: pytest-env
+      workspaces:
+        - name: source
           workspace: pipeline-workspace
   workspaces:
     - name: pipeline-workspace
