@@ -91,7 +91,7 @@ metadata:
   name: postgres-config
 data:
   postgres_user: postgres
-  postgres_db: petstore 
+  postgres_db: resommendations 
 ---
 # This secret can also be created from the command line using environment variables
 #
