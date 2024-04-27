@@ -91,7 +91,10 @@ metadata:
   name: postgres-config
 data:
   postgres_user: postgres
-  postgres_db: resommendations 
+  postgres_db: petstore # It's really weird that I have to use this db name to run correctly.
+  # or I get this issue : 
+  # [2024-04-27 21:11:19,246] CRITICAL in __init__: (psycopg.OperationalError) connection failed: FATAL:  database "petstore" does not exist
+  # postgres_db: recommendation 
 ---
 # This secret can also be created from the command line using environment variables
 #

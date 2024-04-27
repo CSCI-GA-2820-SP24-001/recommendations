@@ -20,15 +20,6 @@ spec:
         app: recommendations
     spec:
       restartPolicy: Always
-      initContainers:
-        - name: check-postgres
-          image: busybox
-          command:
-            [
-              "sh",
-              "-c",
-              "until nc -z postgres 5432; do echo waiting for postgres; sleep 2; done;",
-            ]
       containers:
         - name: recommendations
           image: cluster-registry:32000/recommendations:latest

@@ -11,7 +11,8 @@ RUN python -m pip install --upgrade pip poetry && \
     poetry install --without dev
 
 # Copy the application contents
-COPY service/ ./service/
+COPY wsgi.py .
+COPY service ./service
 
 # Switch to a non-root user and set file ownership
 RUN useradd --uid 1001 flask && \
