@@ -52,11 +52,38 @@ run: ## Run the service
 cluster: ## Create a K3D Kubernetes cluster with load balancer and registry
 	$(info Creating Kubernetes cluster with a registry and 1 node...)
 	k3d cluster create --agents 1 --registry-create cluster-registry:0.0.0.0:32000 --port '8080:80@loadbalancer'
+	make build-docker
+	make setup-cluster
 
 .PHONY: cluster-rm
 cluster-rm: ## Remove a K3D Kubernetes cluster
 	$(info Removing Kubernetes cluster...)
 	k3d cluster delete
+
+.PHONY: deploy
+deploy: ## Deploy the service on local Kubernetes
+	$(info Deploying service locally...)
+	kubectl apply -f k8s/pv.yaml
+	kubectl apply -f k8s/postgresql.yaml
+	kubectl apply -f k8s/deployment.yaml
+	kubectl apply -f k8s/service.yaml
+	kubectl apply -f k8s/ingress.yaml
+
+.PHONY: build-docker
+build-docker: ## Build the docker image and push it to the registry
+	$(info Building the docker image and pushing it to the registry...)
+	docker build -t recommendations:latest .
+	sudo bash -c "echo '127.0.0.1    cluster-registry' >> /etc/hosts"
+	docker tag recommendations:latest cluster-registry:32000/recommendations:latest
+	docker push cluster-registry:32000/recommendations:latest
+
+.PHONY: setup-cluster
+setup-cluster: ## Setup the cluster and deploy the service
+	$(info Creating the namespace for the resource...)
+	kubectl create namespace recommendations-dev
+	kubectl get ns
+	kubectl config set-context --current --namespace recommendations-dev
+	alias kns='kubectl config set-context --current --namespace'
 
 .PHONY: deploy
 depoy: ## Deploy the service on local Kubernetes
